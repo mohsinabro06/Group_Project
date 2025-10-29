@@ -36,6 +36,7 @@ View(AVONET3_BirdTree)
 ```{r}
 
 Bird_data <- AVONET3_BirdTree %>%
-  select(Order3, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche)
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
+  filter(Trophic.Level == "Omnivore")
 
 ```
