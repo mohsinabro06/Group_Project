@@ -28,7 +28,11 @@ library(tidyverse)
 
 
 
-
 ```
 
+```{r}
 
+Bird_data <- AVONET3_BirdTree %>%
+  select(Order3, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche)
+
+```
