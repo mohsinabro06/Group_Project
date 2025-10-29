@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r load-lib, message = FALSE}
 library(tidyverse)
+library(readxl)
 # Add any other libraries here
 
 
@@ -25,7 +26,9 @@ library(tidyverse)
 
 ```{r load-data}
 # load your data 
-
+AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx", 
+    sheet = "AVONET3_BirdTree")
+View(AVONET3_BirdTree)
 
 
 ```
