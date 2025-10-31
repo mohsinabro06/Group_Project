@@ -31,7 +31,9 @@ library(tidyverse)
 
 ## Research Question
 
-We are investigating the correlation between the beak length and trophic niche of bird omnivores within each habitat. we have decided to focus on just omnivores as they are animals that eat both plant and animal matter. We are interested in discovering if the habitat and trophic niche of a bird effects the length of their beak.
+Is there a  correlation between the beak length and trophic niche of bird omnivores within each habitat?
+
+we have decided to focus on just omnivores as they are animals that eat both plant and animal matter. We are interested in investigating if the habitat and trophic niche of a bird effects the length of their beak to visualise the data
 
 
 
