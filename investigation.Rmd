@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load-lib, message = FALSE}
 library(tidyverse)
 library(readxl)
+library(RColorBrewer)
 # Add any other libraries here
 
 
@@ -42,7 +43,9 @@ Bird_data <- AVONET3_BirdTree %>%
 
 Total_Habitat <- Bird_data %>%
   group_by(Habitat) %>%
-  summarise(total.birds = sum(Total.individuals))
+  summarise(total.birds = sum(Total.individuals)) %>%
+  slice(- 7)
+
 
 
 ggplot(data  = Total_Habitat, 
@@ -50,8 +53,12 @@ ggplot(data  = Total_Habitat,
            y = total.birds,
            fill = Habitat)) +
          geom_col() +
-  theme(
-    axis.text.x = element_text(size = 5)) +
+  theme_minimal() +
+    theme(axis.text.x = element_text(size = 5)) +
+      scale_fill_brewer(type = "seq",
+                        palette = 1,
+                        direction = 1,
+                        aesthetics = "fill") +
   labs(title = "Total bird count within each habitat",
        x = "Habitat",
        y = "Total Birds")
@@ -80,4 +87,12 @@ ggplot(data = Bird_data,
        mapping = aes( x = Trophic.Niche,
                       y = Beak.Length_Culmen)) + 
   geom_boxplot()
+```
+
+
+```{r}
+
+Bird_data %>%
+  group_by(Trophic.Niche)
+
 ```
