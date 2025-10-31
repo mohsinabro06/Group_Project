@@ -39,4 +39,14 @@ Bird_data <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
   filter(Trophic.Level == "Omnivore")
 
+
+
+Total_Habitat <- Bird_data %>%
+  group_by(Habitat) %>%
+  summarise(total.birds = sum(Total.individuals))
+
+
+ggplot(data  = Total_Habitat, aes(x = Habitat, y = total.birds)) +
+         geom_col()
+
 ```
