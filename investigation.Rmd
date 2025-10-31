@@ -46,10 +46,15 @@ Total_Habitat <- Bird_data %>%
   summarise(total.birds = sum(Total.individuals))
 
 
-ggplot(data  = Total_Habitat, aes(x = Habitat, y = total.birds)) +
+ggplot(data  = Total_Habitat, 
+       aes(x = Habitat,
+           y = total.birds,
+           fill = Habitat)) +
          geom_col() +
   theme(
-    axis.text.x = element_text(size = 5)
-  )
+    axis.text.x = element_text(size = 5)) +
+  labs(title = "Total bird count within each habitat",
+       x = "Habitat",
+       y = "Total Birds")
 
 ```
