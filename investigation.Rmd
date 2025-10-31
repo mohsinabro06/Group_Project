@@ -78,15 +78,25 @@ total_trophic <- AVONET3_BirdTree %>%
 Bird_data <- left_join(total_trophic, Bird_data) %>%
   select(-Total.individuals)
 
+colours <- rep("pink", length(unique(Bird_data$Trophic.Niche)))
+
 ggplot(data = total_trophic,
        mapping = aes(x = Trophic.Niche, 
-                     y = total.birds)) + 
+                     y = total.birds,
+                     fill = Trophic.Niche)) + 
   geom_col()
 
 ggplot(data = Bird_data,
        mapping = aes( x = Trophic.Niche,
-                      y = Beak.Length_Culmen)) + 
-  geom_boxplot()
+                      y = Beak.Length_Culmen,
+                      fill = Trophic.Niche)) + 
+  geom_boxplot() +
+  scale_fill_manual(values = colours) +
+  theme(axis.text.x = element_text(size = 5.5)) +
+  labs(title = "Culmen length of each trophic niche",
+       subtitle = "Forest Habitat",
+       x = "Trophic Niche",
+       y= "Beak Length Culmen") 
 ```
 
 
