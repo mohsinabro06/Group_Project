@@ -107,7 +107,24 @@ ggplot(data = Bird_data,
 
 ```{r}
 
-Bird_data %>%
-  group_by(Trophic.Niche)
+carnivore_specific <- Bird_data %>%
+  filter(Trophic.Level == "Carnivore")
 
+  ggplot(data = carnivore_specific,
+         mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Niche)) +
+  geom_boxplot() +
+    scale_fill_manual( values = c(
+      "Aquatic predator" = "#f0f9e8",
+      "Invertivore" = "#bae4bc",
+      "Omnivore" = "#7bccc4",
+      "Vertivore" = "#2b8cbe"
+    )) +
+    labs(title = "Carnivore Culmen Lengths",
+         subtitle = "by trophic niche",
+         y = "Culmen Length (cm)",
+         fill = "Trophic Niche") 
+                       
+  
+  
+  
 ```
