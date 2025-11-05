@@ -55,8 +55,8 @@ ggplot(data  = Total_Habitat,
          geom_col() +
   theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10)) +
-      scale_fill_brewer(type = "qual",
-                        palette = 8,
+      scale_fill_brewer(type = "div",
+                        palette = 9,
                         direction = 1,
                         aesthetics = "fill") +
   labs(title = "Total bird count within each habitat",
@@ -75,7 +75,7 @@ total_trophic <- AVONET3_BirdTree %>%
   summarise(total.birds = sum(Total.individuals)) %>%
   slice(c(1,2,3,4,5,6,8,9,10,11))
 
-Bird_data <- left_join(total_trophic, Bird_data) %>%
+forest_data <- left_join(total_trophic, Bird_data) %>%
   select(-Total.individuals)
 
 pink_shades <- c("#C21E56", "#EC008C", "#FD3F92", "#F9429E", "#FF69B4",
@@ -87,16 +87,17 @@ ggplot(data = total_trophic,
        mapping = aes(x = Trophic.Niche,
                      y = total.birds,
                      fill = Trophic.Niche)) +
-  geom_col()
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1))
 
-ggplot(data = Bird_data,
+ggplot(data = forest_data,
        mapping = aes( x = Trophic.Niche,
                       y = Beak.Length_Culmen,
                       fill = Trophic.Niche)) +
   geom_boxplot() +
   scale_fill_manual(values = pink_shades) +
   theme_minimal()+
-  theme(axis.text.x = element_text(size = 4.2)) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
   labs(title = "Culmen length of each trophic niche",
        subtitle = "Forest Habitat",
        x = "Trophic Niche",
