@@ -141,7 +141,7 @@ ggplot(data = marine_birds,
 
 ```{r}
 
-carnivore_specific <- Bird_data %>%
+carnivore_specific <- AVONET3_BirdTree %>%
   filter(Trophic.Level == "Carnivore")
 
   ggplot(data = carnivore_specific,
