@@ -181,11 +181,12 @@ filter(Trophic.Level == "Carnivore") %>%
 
 ```{r}
 birds.data_mass <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass)
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass)%>%
+  mutate(Mass_kg = Mass/1000)
 
 ggplot(data = birds.data_mass,
        mapping = aes(x = Beak.Length_Culmen,
-                     y = Mass)) +
+                     y = Mass_kg)) +
   geom_point()
 
 ```
