@@ -146,11 +146,11 @@ ggplot(data = marine_birds,
 
 ```{r}
 
-carnivore_specific <- Bird_data %>%
+carnivore_specific <- AVONET3_BirdTree %>%
   filter(Trophic.Level == "Carnivore")
 
   ggplot(data = carnivore_specific,
-         mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Niche)) +
+         mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Niche, x = Trophic.Niche)) +
   geom_boxplot() +
     scale_fill_manual( values = c(
       "Aquatic predator" = "#f0f9e8",
@@ -161,6 +161,7 @@ carnivore_specific <- Bird_data %>%
     labs(title = "Carnivore Culmen Lengths",
          subtitle = "by Trophic Niche",
          y = "Culmen Length (cm)",
+         x = "Trophic Niche",
          fill = "Trophic Niche") 
                        
   
@@ -171,5 +172,8 @@ carnivore_specific <- Bird_data %>%
 
   
   
-  
+```{r}
+Total_Habitat <- Bird_data %>%
+  group_by(Habitat) %>%
+  summarise(total.birds = sum(Total.individuals))
 ```
