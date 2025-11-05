@@ -115,10 +115,10 @@ total_trophic <- AVONET3_BirdTree %>%
   summarise(total.birds = sum(Total.individuals)) %>%
   slice(c(1,2,3,4,5,6,8,9,10,11))
 
-marine_birds <- left_join(total_trophic, Bird_data) %>%
+marine_birds <- left_join(total_trophic, marine_birds, by = "Trophic.Niche") %>%
   select(-Total.individuals)
 
-purple_shades <- c("#BCA7E8", "#ECE3FF")
+purple_shades <- c("#ECE3FF", "#BFA9E0", "#A689E1")
 purple_shades <- purple_shades[1:length(unique(Bird_data$Trophic.Niche))]
 
 
