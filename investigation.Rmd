@@ -36,8 +36,8 @@ View(AVONET3_BirdTree)
 
 ```{r}
 Bird_data <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
-  filter(Trophic.Level == "Omnivore")
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) 
+ 
 
 
 
@@ -108,7 +108,7 @@ ggplot(data = forest_data,
 ```{r}
 marine_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
-  filter(Habitat == "Marine", Trophic.Level == "Omnivore")
+  filter(Habitat == "Marine")
 
 marine_birds <- left_join(total_trophic, Bird_data) %>%
   select(-Total.individuals)
