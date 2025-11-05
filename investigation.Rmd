@@ -145,7 +145,7 @@ ggplot(data = marine_birds,
 carnivoire <- Bird_data %>%
 filter(Trophic.Level == "Carnivore") %>%
   arrange(Trophic.Niche) %>%
-  slice(1:5088, 5094:5567)
+  slice(- (5089:5093))
 
   ggplot(data = carnivoire,
          mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Niche, x = Trophic.Niche)) +
