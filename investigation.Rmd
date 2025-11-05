@@ -54,9 +54,9 @@ ggplot(data  = Total_Habitat,
            fill = Habitat)) +
          geom_col() +
   theme_minimal() +
-    theme(axis.text.x = element_text(size = 5)) +
-      scale_fill_brewer(type = "seq",
-                        palette = 1,
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10)) +
+      scale_fill_brewer(type = "qual",
+                        palette = 8,
                         direction = 1,
                         aesthetics = "fill") +
   labs(title = "Total bird count within each habitat",
@@ -87,7 +87,8 @@ ggplot(data = total_trophic,
        mapping = aes(x = Trophic.Niche, 
                      y = total.birds,
                      fill = Trophic.Niche)) + 
-  geom_col()
+  geom_col() +
+   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
 
 ggplot(data = Bird_data,
        mapping = aes( x = Trophic.Niche,
@@ -96,7 +97,7 @@ ggplot(data = Bird_data,
   geom_boxplot() +
   scale_fill_manual(values = pink_shades) +
   theme_minimal()+
-  theme(axis.text.x = element_text(size = 4.2)) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
   labs(title = "Culmen length of each trophic niche",
        subtitle = "Forest Habitat",
        x = "Trophic Niche",
@@ -120,7 +121,7 @@ carnivore_specific <- Bird_data %>%
       "Vertivore" = "#2b8cbe"
     )) +
     labs(title = "Carnivore Culmen Lengths",
-         subtitle = "by trophic niche",
+         subtitle = "by Trophic Niche",
          y = "Culmen Length (cm)",
          fill = "Trophic Niche") 
                        
