@@ -110,6 +110,11 @@ marine_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
   filter(Habitat == "Marine")
 
+total_trophic <- AVONET3_BirdTree %>%
+  group_by(Trophic.Niche) %>%
+  summarise(total.birds = sum(Total.individuals)) %>%
+  slice(c(1,2,3,4,5,6,8,9,10,11))
+
 marine_birds <- left_join(total_trophic, Bird_data) %>%
   select(-Total.individuals)
 
@@ -118,7 +123,7 @@ purple_shades <- purple_shades[1:length(unique(Bird_data$Trophic.Niche))]
 
 
 ggplot(data = marine_birds,
-       mapping = aes(x = Trophic.Level,
+       mapping = aes(x = Trophic.Niche,
                      y = total.birds,
                      fill = Trophic.Niche)) +
   geom_col() +
