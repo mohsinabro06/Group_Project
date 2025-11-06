@@ -107,47 +107,59 @@ ggplot(data = forest_data,
 
 ```{r}
 marine_birds <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
-  filter(Habitat == "Marine")
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
+   filter(Habitat == "Marine" & (Trophic.Level == "Scavenger" | !is.na(Trophic.Level)))
 
-marine_birds <- left_join(total_trophic, Bird_data) %>%
-  select(-Total.individuals)
+total_trophic_level <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) 
 
-purple_shades <- c("#BCA7E8", "#ECE3FF")
+marine_birds <- left_join(total_trophic_level, marine_birds, by = "Trophic.Level") %>%
+  select(-Total.individuals) %>%
+  filter(!is.na(Trophic.Level), total.birds > 0)
+
+purple_shades <- c("#ECE3FF", "#BFA9E0", "#A689E1")
 purple_shades <- purple_shades[1:length(unique(Bird_data$Trophic.Niche))]
 
+purples <- c("#662D91","#A689E1","#D29EFF","#ECE3FF")
+
+marine_birds <- marine_birds %>%
+  filter(!is.na(Trophic.Level))
 
 ggplot(data = marine_birds,
        mapping = aes(x = Trophic.Level,
                      y = total.birds,
-                     fill = Trophic.Niche)) +
+                     fill = Trophic.Level)) +
   geom_col() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  scale_fill_manual(values = purples) +
+  labs(title = "Number of Birds in each Trophic Level",
+       subtitle = "Marine Habitat",
+       x = "Trophic Level",
+       y = "Number of Birds")
 
 ggplot(data = marine_birds,
-       mapping = aes( x = Trophic.Niche,
+       mapping = aes( x = Trophic.Level,
                       y = Beak.Length_Culmen,
-                      fill = Trophic.Niche)) +
+                      fill = Trophic.Level)) +
   geom_boxplot() +
   scale_fill_manual(values = purple_shades) +
   theme_minimal()+
   theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
-  labs(title = "Culmen length of each trophic niche",
+  labs(title = "Culmen length of each Trophic Niche",
        subtitle = "Marine Habitat",
-       x = "Trophic Niche",
+       x = "Trophic Level",
        y= "Beak Length Culmen")
+
 ```
 
 
 ```{r}
 
-# 5089-5093
-carnivoire <- Bird_data %>%
-filter(Trophic.Level == "Carnivore") %>%
-  arrange(Trophic.Niche) %>%
-  slice(- (5089:5093))
+carnivore_specific <- AVONET3_BirdTree %>%
+  filter(Trophic.Level == "Carnivore")
 
-  ggplot(data = carnivoire,
+  ggplot(data = carnivore_specific,
          mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Niche, x = Trophic.Niche)) +
   geom_boxplot() +
     scale_fill_manual( values = c(
@@ -171,22 +183,20 @@ filter(Trophic.Level == "Carnivore") %>%
   
   
 ```{r}
-carnivoire <- Bird_data %>%
-filter(Trophic.Level == "Carnivore") %>%
-  arrange(Trophic.Niche) %>%
-  slice(- (5089:5093))
+Total_Habitat <- Bird_data %>%
+  group_by(Habitat) %>%
+  summarise(total.birds = sum(Total.individuals))
 ```
 
 
 
 ```{r}
 birds.data_mass <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass)%>%
-  mutate(Mass_kg = Mass/1000)
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass)
 
 ggplot(data = birds.data_mass,
        mapping = aes(x = Beak.Length_Culmen,
-                     y = Mass_kg)) +
+                     y = Mass)) +
   geom_point()
 
 ```
