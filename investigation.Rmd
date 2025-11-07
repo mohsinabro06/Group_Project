@@ -31,8 +31,6 @@ library(parsnip)
 # load your data 
 AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx", 
     sheet = "AVONET3_BirdTree")
-View(AVONET3_BirdTree)
-
 
 ```
 
@@ -261,7 +259,6 @@ all_culmens <- Bird_data %>%
   arrange(Trophic.Level) %>%
 slice(- (8347:8351))
 
-view(all_culmens)
 
   ggplot(data = all_culmens,
          mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Level, x = Trophic.Level)) +
