@@ -152,6 +152,53 @@ ggplot(data = marine_birds,
        y= "Beak Length Culmen")
 
 ```
+```{r}
+riverine_birds <- AVONET3_BirdTree %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
+   filter(Habitat == "Riverine")
+
+total_trophic_level <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) 
+
+riverine_birds <- left_join(total_trophic_level, riverine_birds, by = "Trophic.Level") %>%
+  select(-Total.individuals) %>%
+  filter(!is.na(Trophic.Level), total.birds > 0)
+
+turqoise_shades <- c("#008081", "#81D8D0", "#B0DFE5")
+turqoise_shades <- turqoise_shades[1:length(unique(Bird_data$Trophic.Niche))]
+
+turqoise <- c("#008081", "#81D8D0","#3FE0D0", "#B0DFE5")
+
+riverine_birds <- riverine_birds %>%
+  filter(!is.na(Trophic.Level))
+
+ggplot(data = riverine_birds,
+       mapping = aes(x = Trophic.Level,
+                     y = total.birds,
+                     fill = Trophic.Level)) +
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  scale_fill_manual(values = turqoise) +
+  labs(title = "Number of Birds in each Trophic Level",
+       subtitle = "Riverine Habitat",
+       x = "Trophic Level",
+       y = "Number of Birds")
+
+ggplot(data = riverine_birds,
+       mapping = aes( x = Trophic.Level,
+                      y = Beak.Length_Culmen,
+                      fill = Trophic.Level)) +
+  geom_boxplot() +
+  scale_fill_manual(values = turqoise_shades) +
+  theme_minimal()+
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  labs(title = "Culmen length of each Trophic Niche",
+       subtitle = "Riverine Habitat",
+       x = "Trophic Level",
+       y= "Beak Length Culmen")
+```
+
 
 
 ```{r}
