@@ -18,6 +18,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
 library(RColorBrewer)
+library(broom)
+library(parsnip)
 # Add any other libraries here
 
 
@@ -300,11 +302,7 @@ ggplot(data = birds.data_mass,
 ```
 ```{r}
 
-install.packages("broom")
-library("broom")
 
-install.packages("parsnip")
-library("parsnip")
 
 linear_reg() %>%
   set_engine("lm") %>%
