@@ -395,13 +395,19 @@ birds.data_mass <- AVONET3_BirdTree %>%
 ggplot(data = birds.data_mass,
        mapping = aes(x = log_culmen,
                      y = log_mass_kg)) +
-  geom_point(alpha = 0.3, mapping = aes(colour = Trophic.Level)) +
+  geom_point(alpha = 0.8, mapping = aes(colour = Trophic.Level)) +
   geom_smooth(method = lm, se = FALSE) +
   labs(
     x = "Log of Culmen Length (cm)", 
     y = "Log of Mass (kg)",
     fill = "Trophic Level"
-  ) 
+  ) +
+  scale_colour_manual(values = c(
+    "Carnivore" = "#d7b5d8",
+    "Herbivore" = "#fbb4b9",
+    "Omnivore" = "#8c96c6",
+    "Scavenger" = "#88419d"
+  ))
 # 1% increase in x = 2.198% in y
 ```
 ```{r}
