@@ -44,7 +44,7 @@ Bird_data <- AVONET3_BirdTree %>%
 Total_Habitat <- Bird_data %>%
   group_by(Habitat) %>%
   summarise(total.birds = sum(Total.individuals)) %>%
-  slice(- 7)
+  filter(Habitat != "NA")
 
 
 
@@ -311,7 +311,7 @@ ggplot(data = plot_data,
 all_culmens <- Bird_data %>%
   filter(!is.na(Trophic.Level)) %>%
   arrange(Trophic.Level) %>%
-slice(- (8347:8351))
+filter(Trophic.Level != "NA")
 
 
   ggplot(data = all_culmens,
@@ -335,7 +335,7 @@ slice(- (8347:8351))
 carnivoire <- Bird_data %>%
 filter(Trophic.Level == "Carnivore") %>%
   arrange(Trophic.Niche) %>%
-  slice(- (5089:5093))
+  filter(Trophic.Niche != "NA")
 ```
 
 
@@ -344,7 +344,8 @@ filter(Trophic.Level == "Carnivore") %>%
 birds.data_mass <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
   mutate(Mass_kg = Mass/1000,
-         log_mass_kg = log(Mass_kg), log_culmen = log(Beak.Length_Culmen))
+         log_mass_kg = log(Mass_kg), log_culmen = log(Beak.Length_Culmen)) %>%
+   filter(Trophic.Level != "NA")
 
 ggplot(data = birds.data_mass,
        mapping = aes(x = log_culmen,
