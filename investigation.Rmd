@@ -78,8 +78,7 @@ total_trophic <- AVONET3_BirdTree %>%
 forest_data <- left_join(total_trophic, Bird_data) %>%
   select(-Total.individuals)
 
-pink_shades <- c("#C21E56", "#FF69B4",
-                 "#FC89AC", "#F6ADC6")
+pink_shades <- c("#FF5D8F", "#FF87AB", "#FFA6C1", "#FFC4D6")
 pink_shades <- pink_shades[1:length(unique(Bird_data$Trophic.Niche))]
 
 
@@ -88,7 +87,13 @@ ggplot(data = total_trophic,
                      y = total.birds,
                      fill = Trophic.Level)) +
   geom_col() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1))
+  scale_fill_manual(values = pink_shades) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  labs(title = "Number of Birds in each Trophic Level",
+       subtitle = "Forest Habitat",
+       x = "Trophic Level",
+       y = "Number of Birds")
+  
 
 ggplot(data = forest_data,
        mapping = aes( x = Trophic.Level,
