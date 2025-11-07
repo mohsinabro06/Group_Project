@@ -71,36 +71,36 @@ forest_data <- AVONET3_BirdTree %>%
   filter(Habitat == "Forest")
 
 total_trophic <- AVONET3_BirdTree %>%
-  group_by(Trophic.Niche) %>%
+  group_by(Trophic.Level) %>%
   summarise(total.birds = sum(Total.individuals)) %>%
-  slice(c(1,2,3,4,5,6,8,9,10,11))
+  slice(c(-3))
 
 forest_data <- left_join(total_trophic, Bird_data) %>%
   select(-Total.individuals)
 
-pink_shades <- c("#C21E56", "#EC008C", "#FD3F92", "#F9429E", "#FF69B4",
-                 "#FD6C9E", "#FC89AC", "#F6ADC6", "#FFC1CC", "#FDDDE6")
+pink_shades <- c("#C21E56", "#FF69B4",
+                 "#FC89AC", "#F6ADC6")
 pink_shades <- pink_shades[1:length(unique(Bird_data$Trophic.Niche))]
 
 
 ggplot(data = total_trophic,
-       mapping = aes(x = Trophic.Niche,
+       mapping = aes(x = Trophic.Level,
                      y = total.birds,
-                     fill = Trophic.Niche)) +
+                     fill = Trophic.Level)) +
   geom_col() +
   theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1))
 
 ggplot(data = forest_data,
-       mapping = aes( x = Trophic.Niche,
+       mapping = aes( x = Trophic.Level,
                       y = Beak.Length_Culmen,
-                      fill = Trophic.Niche)) +
+                      fill = Trophic.Level)) +
   geom_boxplot() +
   scale_fill_manual(values = pink_shades) +
   theme_minimal()+
   theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
-  labs(title = "Culmen length of each trophic niche",
+  labs(title = "Culmen length of each trophic level",
        subtitle = "Forest Habitat",
-       x = "Trophic Niche",
+       x = "Trophic Level",
        y= "Beak Length Culmen")
 ```
 
@@ -279,19 +279,6 @@ view(all_culmens)
 ```
 
 ```{r}
-
-
-```
-```{r}
-
-```
-
-
-
-
-  
-  
-```{r}
 carnivoire <- Bird_data %>%
 filter(Trophic.Level == "Carnivore") %>%
   arrange(Trophic.Niche) %>%
@@ -324,9 +311,3 @@ linear_reg() %>%
   fit(log(Mass_kg) ~ Beak.Length_Culmen, data = birds.data_mass) %>%
   tidy()
 ```
-```{r}
-
-  
-```
-
-
