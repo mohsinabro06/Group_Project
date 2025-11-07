@@ -124,7 +124,7 @@ marine_birds <- left_join(total_trophic_level, marine_birds, by = "Trophic.Level
   filter(!is.na(Trophic.Level), total.birds > 0)
 
 purple_shades <- c("#ECE3FF", "#BFA9E0", "#A689E1")
-purple_shades <- purple_shades[1:length(unique(Bird_data$Trophic.Niche))]
+purple_shades <- purple_shades[1:length(unique(Bird_data$Trophic.Level))]
 
 purples <- c("#662D91","#A689E1","#D29EFF","#ECE3FF")
 
@@ -158,6 +158,10 @@ ggplot(data = marine_birds,
 
 ```
 ```{r}
+#riverine birds data plot
+#findings: no data available for scavenger culmen length, but there are <100 riverine scavenger birds, there is a significantly large amount of carnivore birds
+#on average, the beak culmen of herbivores are greater
+
 riverine_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
    filter(Habitat == "Riverine")
@@ -171,7 +175,7 @@ riverine_birds <- left_join(total_trophic_level, riverine_birds, by = "Trophic.L
   filter(!is.na(Trophic.Level), total.birds > 0)
 
 turqoise_shades <- c("#008081", "#81D8D0", "#B0DFE5")
-turqoise_shades <- turqoise_shades[1:length(unique(Bird_data$Trophic.Niche))]
+turqoise_shades <- turqoise_shades[1:length(unique(Bird_data$Trophic.Level))]
 
 turqoise <- c("#008081", "#81D8D0","#3FE0D0", "#B0DFE5")
 
@@ -204,6 +208,53 @@ ggplot(data = riverine_birds,
        y= "Beak Length Culmen")
 ```
 ```{r}
+#human modified birds data plot
+#findings: there is <15 scavenger birds so barely shows up in the bar chart, but it shows that scavenger human modified birds have a greater beak culmen lengths on average compared to the other trophic levels
+#couple of carnivore outliers
+
+human_modified_birds <- AVONET3_BirdTree %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
+   filter(Habitat == "Human Modified" & (Trophic.Level == "Scavenger" | !is.na(Trophic.Level)))
+
+total_trophic_level <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) 
+
+human_modified_birds <- left_join(total_trophic_level, human_modified_birds, by = "Trophic.Level")
+brown_shades <- c("#5B3E31","#A08679", "#BCA89F", "#D8CBC4")
+brown_shades <- brown_shades[1:length(unique(Bird_data$Trophic.Level))]
+
+human_modified_birds <- human_modified_birds %>%
+  filter(!is.na(Trophic.Level))
+plot_data <- human_modified_birds %>%
+  filter(!is.na(Trophic.Level), Trophic.Level != "NA")
+
+ggplot(data = plot_data,
+       mapping = aes(x = Trophic.Level,
+                     y = total.birds,
+                     fill = Trophic.Level)) +
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  scale_fill_manual(values = brown_shades) +
+  labs(title = "Number of Birds in each Trophic Level",
+       subtitle = "Human Modified",
+       x = "Trophic Level",
+       y = "Number of Birds")
+
+ggplot(data = plot_data,
+       mapping = aes( x = Trophic.Level,
+                      y = Beak.Length_Culmen,
+                      fill = Trophic.Level)) +
+  geom_boxplot() +
+  scale_fill_manual(values = brown_shades) +
+  theme_minimal()+
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  labs(title = "Culmen length of each Trophic Level",
+       subtitle = "Human Modified Habitat",
+       x = "Trophic Level",
+       y= "Beak Length Culmen")
+```
+```{r}
 coastal_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
    filter(Habitat == "Coastal")
@@ -216,10 +267,8 @@ coastal_birds <- left_join(total_trophic_level, coastal_birds, by = "Trophic.Lev
   select(-Total.individuals) %>%
   filter(!is.na(Trophic.Level), total.birds > 0)
 
-blue_shades <- c("#0E4D92", "#4682B4","#89CFF0")
-blue_shades <- blue_shades[1:length(unique(Bird_data$Trophic.Niche))]
-
 blue <- c("#0E4D92", "#4682B4","#73c2fb", "#89CFF0")
+blue <- blue[1:length(unique(Bird_data$Trophic.Level))]
 
 coastal_birds <- coastal_birds %>%
   filter(!is.na(Trophic.Level))
@@ -241,7 +290,7 @@ ggplot(data = coastal_birds,
                       y = Beak.Length_Culmen,
                       fill = Trophic.Level)) +
   geom_boxplot() +
-  scale_fill_manual(values = blue_shades) +
+  scale_fill_manual(values = blue) +
   theme_minimal()+
   theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
   labs(title = "Culmen length of each Trophic Level",
@@ -293,21 +342,26 @@ filter(Trophic.Level == "Carnivore") %>%
 
 ```{r}
 birds.data_mass <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass)%>%
-  mutate(Mass_kg = Mass/1000)
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
+  mutate(Mass_kg = Mass/1000,
+         log_mass_kg = log(Mass_kg), log_culmen = log(Beak.Length_Culmen))
 
 ggplot(data = birds.data_mass,
-       mapping = aes(x = Beak.Length_Culmen,
-                     y = Mass_kg)) +
-  geom_point()
-
+       mapping = aes(x = log_culmen,
+                     y = log_mass_kg)) +
+  geom_point(alpha = 0.3, mapping = aes(colour = Trophic.Level)) +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    x = "Log of Culmen Length (cm)", 
+    y = "Log of Mass (kg)",
+    fill = "Trophic Level"
+  ) 
+# 1% increase in x = 2.198% in y
 ```
 ```{r}
 
-
-
 linear_reg() %>%
   set_engine("lm") %>%
-  fit(log(Mass_kg) ~ Beak.Length_Culmen, data = birds.data_mass) %>%
+  fit(log_mass_kg ~ log_culmen, data = birds.data_mass) %>%
   tidy()
 ```
