@@ -250,26 +250,40 @@ ggplot(data = coastal_birds,
 ```{r}
 
 # 5089-5093
-carnivoire <- Bird_data %>%
-filter(Trophic.Level == "Carnivore") %>%
-  arrange(Trophic.Niche) %>%
-  slice(- (5089:5093))
+#carnivoire <- Bird_data %>%
+#filter(Trophic.Level == "Carnivore") %>%
+  #arrange(Trophic.Niche) %>%
+  #slice(- (5089:5093))
+all_culmens <- Bird_data %>%
+  filter(!is.na(Trophic.Level)) %>%
+  arrange(Trophic.Level) %>%
+slice(- (8347:8351))
 
-  ggplot(data = carnivoire,
-         mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Niche, x = Trophic.Niche)) +
+view(all_culmens)
+
+  ggplot(data = all_culmens,
+         mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Level, x = Trophic.Level)) +
   geom_boxplot() +
     scale_fill_manual( values = c(
-      "Aquatic predator" = "#f0f9e8",
-      "Invertivore" = "#bae4bc",
+      "Carnivore" = "#f0f9e8",
+      "Herbivore" = "#bae4bc",
       "Omnivore" = "#7bccc4",
-      "Vertivore" = "#2b8cbe"
+      "Scavenger" = "#2b8cbe"
     )) +
-    labs(title = "Carnivore Culmen Lengths",
-         subtitle = "by Trophic Niche",
+    labs(title = "Culmen Lengths",
+         subtitle = "by Trophic Level",
          y = "Culmen Length (cm)",
-         x = "Trophic Niche",
-         fill = "Trophic Niche") 
+         x = "Trophic Level",
+         fill = "Trophic Level") 
   
+```
+
+```{r}
+
+
+```
+```{r}
+
 ```
 
 
@@ -297,4 +311,22 @@ ggplot(data = birds.data_mass,
   geom_point()
 
 ```
+```{r}
+
+install.packages("broom")
+library("broom")
+
+install.packages("parsnip")
+library("parsnip")
+
+linear_reg() %>%
+  set_engine("lm") %>%
+  fit(log(Mass_kg) ~ Beak.Length_Culmen, data = birds.data_mass) %>%
+  tidy()
+```
+```{r}
+
+  
+```
+
 
