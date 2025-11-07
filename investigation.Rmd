@@ -417,3 +417,9 @@ linear_reg() %>%
   fit(log_mass_kg ~ log_culmen, data = birds.data_mass) %>%
   tidy()
 ```
+
+```{r}
+ggplot(data = Bird_data, 
+       mapping = aes(x = Beak.Length_Culmen)) +
+  geom_histogram(bins = 10)
+```
