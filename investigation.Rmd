@@ -78,7 +78,7 @@ total_trophic <- AVONET3_BirdTree %>%
 forest_data <- left_join(total_trophic, Bird_data) %>%
   select(-Total.individuals)
 
-pink_shades <- c("#FF5D8F", "#FF87AB", "#FFA6C1", "#FFC4D6")
+pink_shades <- c("#18392B", "#0F5132", "#066839", "#1B7D4F")
 pink_shades <- pink_shades[1:length(unique(Bird_data$Trophic.Niche))]
 
 
@@ -207,6 +207,51 @@ ggplot(data = riverine_birds,
        x = "Trophic Level",
        y= "Beak Length Culmen")
 ```
+
+```{r}
+coastal_birds <- AVONET3_BirdTree %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
+   filter(Habitat == "Coastal")
+
+total_trophic_level <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) 
+
+coastal_birds <- left_join(total_trophic_level, coastal_birds, by = "Trophic.Level") %>%
+  select(-Total.individuals) %>%
+  filter(!is.na(Trophic.Level), total.birds > 0)
+
+blue <- c("#0E4D92", "#4682B4","#73c2fb", "#89CFF0")
+blue <- blue[1:length(unique(Bird_data$Trophic.Level))]
+
+coastal_birds <- coastal_birds %>%
+  filter(!is.na(Trophic.Level))
+
+ggplot(data = coastal_birds,
+       mapping = aes(x = Trophic.Level,
+                     y = total.birds,
+                     fill = Trophic.Level)) +
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  scale_fill_manual(values = blue) +
+  labs(title = "Number of Birds in each Trophic Level",
+       subtitle = " Coastal Habitat",
+       x = "Trophic Level",
+       y = "Number of Birds")
+
+ggplot(data = coastal_birds,
+       mapping = aes( x = Trophic.Level,
+                      y = Beak.Length_Culmen,
+                      fill = Trophic.Level)) +
+  geom_boxplot() +
+  scale_fill_manual(values = blue) +
+  theme_minimal()+
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  labs(title = "Culmen length of each Trophic Level",
+       subtitle = "Coastal Habitat",
+       x = "Trophic Level",
+       y= "Beak Length Culmen")
+```
 ```{r}
 #human modified birds data plot
 #findings: there is <15 scavenger birds so barely shows up in the bar chart, but it shows that scavenger human modified birds have a greater beak culmen lengths on average compared to the other trophic levels
@@ -254,51 +299,6 @@ ggplot(data = plot_data,
        x = "Trophic Level",
        y= "Beak Length Culmen")
 ```
-```{r}
-coastal_birds <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
-   filter(Habitat == "Coastal")
-
-total_trophic_level <- AVONET3_BirdTree %>%
-  group_by(Trophic.Level) %>%
-  summarise(total.birds = sum(Total.individuals)) 
-
-coastal_birds <- left_join(total_trophic_level, coastal_birds, by = "Trophic.Level") %>%
-  select(-Total.individuals) %>%
-  filter(!is.na(Trophic.Level), total.birds > 0)
-
-blue <- c("#0E4D92", "#4682B4","#73c2fb", "#89CFF0")
-blue <- blue[1:length(unique(Bird_data$Trophic.Level))]
-
-coastal_birds <- coastal_birds %>%
-  filter(!is.na(Trophic.Level))
-
-ggplot(data = coastal_birds,
-       mapping = aes(x = Trophic.Level,
-                     y = total.birds,
-                     fill = Trophic.Level)) +
-  geom_col() +
-  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
-  scale_fill_manual(values = blue) +
-  labs(title = "Number of Birds in each Trophic Level",
-       subtitle = " Coastal Habitat",
-       x = "Trophic Level",
-       y = "Number of Birds")
-
-ggplot(data = coastal_birds,
-       mapping = aes( x = Trophic.Level,
-                      y = Beak.Length_Culmen,
-                      fill = Trophic.Level)) +
-  geom_boxplot() +
-  scale_fill_manual(values = blue) +
-  theme_minimal()+
-  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
-  labs(title = "Culmen length of each Trophic Level",
-       subtitle = "Coastal Habitat",
-       x = "Trophic Level",
-       y= "Beak Length Culmen")
-```
-
 
 
 ```{r}
