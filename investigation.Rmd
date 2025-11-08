@@ -111,7 +111,7 @@ ggplot(data = forest_data,
 ```{r}
 shrubland_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
-   filter(Habitat == "Shrubland" & (Trophic.Level == "Scavenger" | !is.na(Trophic.Level)))
+   filter(Habitat == "Shrubland" & (Trophic.Level == "Scavenger" | Trophic.Level != "NA"))
 
 total_trophic_level <- AVONET3_BirdTree %>%
   group_by(Trophic.Level) %>%
@@ -122,9 +122,9 @@ yellow_shades <- c("#FFFF4C","#FFFF90", "#FFFFC1", "#FFFFDD")
 yellow_shades <- yellow_shades[1:length(unique(Bird_data$Trophic.Level))]
 
 human_modified_birds <- human_modified_birds %>%
-  filter(!is.na(Trophic.Level))
+  filter(Trophic.Level != "NA")
 plot_data <- human_modified_birds %>%
-  filter(!is.na(Trophic.Level), Trophic.Level != "NA")
+  filter(Trophic.Level != "NA")
 
 ggplot(data = plot_data,
        mapping = aes(x = Trophic.Level,
@@ -164,7 +164,7 @@ total_trophic_level <- AVONET3_BirdTree %>%
 
 marine_birds <- left_join(total_trophic_level, marine_birds, by = "Trophic.Level") %>%
   select(-Total.individuals) %>%
-  filter(!is.na(Trophic.Level), total.birds > 0)
+  filter(Trophic.Level != "NA", total.birds > 0)
 
 purple_shades <- c("#ECE3FF", "#BFA9E0", "#A689E1")
 purple_shades <- purple_shades[1:length(unique(Bird_data$Trophic.Level))]
@@ -172,7 +172,7 @@ purple_shades <- purple_shades[1:length(unique(Bird_data$Trophic.Level))]
 purples <- c("#662D91","#A689E1","#D29EFF","#ECE3FF")
 
 marine_birds <- marine_birds %>%
-  filter(!is.na(Trophic.Level))
+  filter(Trophic.Level != "NA")
 
 ggplot(data = marine_birds,
        mapping = aes(x = Trophic.Level,
@@ -215,7 +215,7 @@ total_trophic_level <- AVONET3_BirdTree %>%
 
 riverine_birds <- left_join(total_trophic_level, riverine_birds, by = "Trophic.Level") %>%
   select(-Total.individuals) %>%
-  filter(!is.na(Trophic.Level), total.birds > 0)
+  filter(Trophic.Level != "NA", total.birds > 0)
 
 turqoise_shades <- c("#008081", "#81D8D0", "#B0DFE5")
 turqoise_shades <- turqoise_shades[1:length(unique(Bird_data$Trophic.Level))]
@@ -223,7 +223,7 @@ turqoise_shades <- turqoise_shades[1:length(unique(Bird_data$Trophic.Level))]
 turqoise <- c("#008081", "#81D8D0","#3FE0D0", "#B0DFE5")
 
 riverine_birds <- riverine_birds %>%
-  filter(!is.na(Trophic.Level))
+  filter(Trophic.Level != "NA")
 
 ggplot(data = riverine_birds,
        mapping = aes(x = Trophic.Level,
@@ -262,13 +262,13 @@ total_trophic_level <- AVONET3_BirdTree %>%
 
 coastal_birds <- left_join(total_trophic_level, coastal_birds, by = "Trophic.Level") %>%
   select(-Total.individuals) %>%
-  filter(!is.na(Trophic.Level), total.birds > 0)
+  filter(Trophic.Level != "NA", total.birds > 0)
 
 blue <- c("#0E4D92", "#4682B4","#73c2fb", "#89CFF0")
 blue <- blue[1:length(unique(Bird_data$Trophic.Level))]
 
 coastal_birds <- coastal_birds %>%
-  filter(!is.na(Trophic.Level))
+  filter(Trophic.Level != "NA")
 
 ggplot(data = coastal_birds,
        mapping = aes(x = Trophic.Level,
@@ -304,7 +304,7 @@ ggplot(data = coastal_birds,
 
 human_modified_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
-   filter(Habitat == "Human Modified" & (Trophic.Level == "Scavenger" | !is.na(Trophic.Level)))
+   filter(Habitat == "Human Modified" & (Trophic.Level == "Scavenger" | Trophic.Level != "NA"))
 
 total_trophic_level <- AVONET3_BirdTree %>%
   group_by(Trophic.Level) %>%
@@ -315,9 +315,9 @@ brown_shades <- c("#5B3E31","#A08679", "#BCA89F", "#D8CBC4")
 brown_shades <- brown_shades[1:length(unique(Bird_data$Trophic.Level))]
 
 human_modified_birds <- human_modified_birds %>%
-  filter(!is.na(Trophic.Level))
+  filter(Trophic.Level != "NA")
 plot_data <- human_modified_birds %>%
-  filter(!is.na(Trophic.Level), Trophic.Level != "NA")
+  filter(Trophic.Level != "NA")
 
 ggplot(data = plot_data,
        mapping = aes(x = Trophic.Level,
@@ -354,7 +354,7 @@ ggplot(data = plot_data,
   #arrange(Trophic.Niche) %>%
   #slice(- (5089:5093))
 all_culmens <- Bird_data %>%
-  filter(!is.na(Trophic.Level)) %>%
+  filter(Trophic.Level != "NA") %>%
   arrange(Trophic.Level) %>%
 filter(Trophic.Level != "NA")
 
@@ -419,7 +419,15 @@ linear_reg() %>%
 ```
 
 ```{r}
-ggplot(data = Bird_data, 
-       mapping = aes(x = Beak.Length_Culmen)) +
-  geom_histogram(bins = 10)
+
+ggplot(Bird_data, aes(x = Beak.Length_Culmen, weight = Total.individuals)) +
+  geom_histogram(binwidth = 0.2, fill = "steelblue") +
+  labs(title = "Histogram of Beak Lengths (Weighted by Individuals)",
+       x = "Beak Length (Culmen)", y = "Total Individuals") +
+  scale_x_continuous(limits = c(0, 100)) +
+  theme_minimal() +
+  geom_vline(xintercept = c(8, 25), linetype = "dashed", color = "red")
+# scale_x_log10()
+
+
 ```
