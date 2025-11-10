@@ -10,7 +10,7 @@ output:
     lib_dir: libs
     nature:
       ratio: "16:9"
-      highlightStyle: github
+      highlightStyle: solarized-dark
       highlightLines: true
       countIncrementalSlides: false
       
@@ -21,6 +21,7 @@ output:
 # the `xaringan` package that contains all of the code which allows you 
 # to create presentation slides in Rmarkdown
 install.packages('xaringan')
+style_xarigan(fon)
 ```
 
 
@@ -31,6 +32,7 @@ library(tidymodels)
 library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
+library(readxl)
 ```
 
 ```{r setup, include=FALSE}
@@ -40,7 +42,8 @@ knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618,
 
 ```{r load-data, include=FALSE}
 # Load your data here
-
+AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx", 
+    sheet = "AVONET3_BirdTree")
 ```
 
 ```{r include=FALSE}
@@ -48,7 +51,7 @@ knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618,
 #Background image
 style_xaringan(
   title_slide_background_image = "img/parrot.jpg"
-)
+  )
 ```
 
 class: center, middle
