@@ -541,19 +541,23 @@ birds.data_mass <- AVONET3_BirdTree %>%
 ggplot(data = birds.data_mass,
        mapping = aes(x = log_culmen,
                      y = log_mass_kg)) +
-  geom_point(alpha = 0.8, mapping = aes(colour = Trophic.Level)) +
+  geom_point(alpha = 0.6, size = 0.8, mapping = aes(colour = Trophic.Level)) +
   geom_smooth(method = lm, se = FALSE) +
   labs(
+    title = "Bird Culmen Length vs. Mass",
+    subtitle = "by trophic level",
     x = "Log of Culmen Length (cm)", 
     y = "Log of Mass (kg)",
-    fill = "Trophic Level"
+    colour = "Trophic Level"
   ) +
   scale_colour_manual(values = c(
-    "Carnivore" = "#d7b5d8",
-    "Herbivore" = "#fbb4b9",
-    "Omnivore" = "#8c96c6",
-    "Scavenger" = "#88419d"
-  ))
+    "Carnivore" = "#88419d",
+    "Herbivore" = "#d7b5d8",
+    "Omnivore" = "#41b6c4",
+    "Scavenger" = "#0570b0"
+  )) +
+  theme_minimal() +
+  theme(legend.title = element_text(size = 12))
 # 1% increase in x = 2.198% in y
 ```
 ```{r}
