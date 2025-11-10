@@ -121,9 +121,9 @@ shrubland_birds <- left_join(total_trophic_level, shrubland_birds, by = "Trophic
 yellow_shades <- c("#FFFF4C","#FFFF90", "#FFFFC1", "#FFFFDD")
 yellow_shades <- yellow_shades[1:length(unique(Bird_data$Trophic.Level))]
 
-human_modified_birds <- human_modified_birds %>%
+shrubland_birds <- shrubland_birds %>%
   filter(Trophic.Level != "NA")
-plot_data <- human_modified_birds %>%
+plot_data <- shrubland_birds %>%
   filter(Trophic.Level != "NA")
 
 ggplot(data = plot_data,
