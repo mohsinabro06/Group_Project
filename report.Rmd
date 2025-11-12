@@ -22,11 +22,17 @@ library(readxl)
 
 ```{r load-data, include=FALSE}
 # load your data here and any pre-processing/cleaning 
+<<<<<<< HEAD
 AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx", 
     sheet = "AVONET3_BirdTree")
 
 Bird_data <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) 
+=======
+#  that you need for your report.
+AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx", 
+    sheet = "AVONET3_BirdTree")
+>>>>>>> 4d14d346da2e75ad875a655e95b20183c7f9d03d
 
 
 
@@ -35,11 +41,7 @@ Bird_data <- AVONET3_BirdTree %>%
 
 ## Research Question
 
-Is there a  correlation between the beak length and trophic niche of bird omnivores within each habitat?
-
-we have decided to focus on just omnivores as they are animals that eat both plant and animal matter. We are interested in investigating if the habitat and trophic niche of a bird effects the length of their beak to visualise the data
-
-
+Investigating the relationship between beak length and trophic level within each habitat.
 
 
 ## Data
@@ -49,6 +51,7 @@ Include a citation for your data.
 See http://libraryguides.vu.edu.au/c.php?g=386501&p=4347840 for guidance on proper citation for datasets. 
 If you got your data off the web, make sure to state the retrieval date.
 
+The dataset includes data about 9,993 different bird species, the key variables within the dataset we are investigating are; Beak Length (Culmen), Habitat, Trophic Level and Mass.
 
 
 
