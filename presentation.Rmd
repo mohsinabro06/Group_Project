@@ -58,22 +58,24 @@ class: center, middle
 ## Investigating how trophic level affects the physical characteristics of birds within each habitat
 
 ---
-
-class: inverse, center, middle
-
-# Culmen length of a bird
-```{r culmen, echo = FALSE, out.width = "55%", fig.align = "center"}
-include_graphics("img/culmen.jpg")
-```
-
-
----
-
-# What choices we made
+# What choices we made and why
 
 - We decided to focus on how the eating habits of the birds (characterized by their trophic level), affects their physical characteristics because we wanted to investigate how the type of food each bird consumes will affect their appearance.
 
 - We also decided to separate the birds by habitat, because the food available will differ by each habitat, and consequently so will the eating habits (trophic level) of the birds. 
+---
+# What variables are we investigating?
+- Habitat, 
+
+---
+
+class: inverse, center, middle
+
+# Culmen length of a bird
+```{r culmen, echo = FALSE, out.width = "25%", fig.align = "left"}
+include_graphics("img/culmen.jpg")
+```
+
 
 ---
 
