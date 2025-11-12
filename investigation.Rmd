@@ -576,7 +576,7 @@ ggplot(Bird_data, aes(x = Beak.Length_Culmen, weight = Total.individuals)) +
        x = "Beak Length (Culmen)", y = "Total Individuals") +
   scale_x_continuous(limits = c(0, 100)) +
   theme_minimal() +
-  geom_vline(xintercept = c(8, 25), linetype = "dashed", color = "red")
+  geom_vline(xintercept = c(8, 25), linetype = "dashed", color = "red")  
 # scale_x_log10()
 
 # beak length values exist beyond 250, but for the sake of simplicity the graph is restricted to values uptil 100.
