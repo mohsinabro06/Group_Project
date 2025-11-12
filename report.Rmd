@@ -22,17 +22,12 @@ library(readxl)
 
 ```{r load-data, include=FALSE}
 # load your data here and any pre-processing/cleaning 
-<<<<<<< HEAD
 AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx", 
     sheet = "AVONET3_BirdTree")
 
 Bird_data <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) 
-=======
-#  that you need for your report.
-AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx", 
-    sheet = "AVONET3_BirdTree")
->>>>>>> 4d14d346da2e75ad875a655e95b20183c7f9d03d
+
 
 
 
