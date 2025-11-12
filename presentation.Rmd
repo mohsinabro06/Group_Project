@@ -1,5 +1,5 @@
 ---
-title: "Presentation title"
+title: "Bird data"
 subtitle: "Presentation subtitle (if any)"
 author: "Fire Emoji <br> Beth, Beatrice, Faaiz, Mohsin"
 institute: "University of Edinburgh"
@@ -10,7 +10,7 @@ output:
     lib_dir: libs
     nature:
       ratio: "16:9"
-      highlightStyle: solarized-dark
+      highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
       
@@ -21,7 +21,6 @@ output:
 # the `xaringan` package that contains all of the code which allows you 
 # to create presentation slides in Rmarkdown
 install.packages('xaringan')
-style_xarigan(fon)
 ```
 
 
@@ -56,21 +55,25 @@ style_xaringan(
 
 class: center, middle
 
-## A statement of the overall goal / research question
+## Investigating how trophic level affects the physical characteristics of birds within each habitat
 
 ---
 
 class: inverse, center, middle
 
-# Section title
+# Culmen length of a bird
+```{r culmen, echo = FALSE, out.width = "55%", fig.align = "center"}
+include_graphics("img/culmen.jpg")
+```
+
 
 ---
 
-# Hello World
+# What choices we made
 
-- Click the `Knit` button to compile your presentation
+- We decided to focus on how the eating habits of the birds (characterized by their trophic level), affects their physical characteristics because we wanted to investigate how the type of food each bird consumes will affect their appearance.
 
-- Make sure to commit and push all resulting files to your GitHub repo
+- We also decided to separate the birds by habitat, because the food available will differ by each habitat, and consequently so will the eating habits (trophic level) of the birds. 
 
 ---
 
