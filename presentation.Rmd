@@ -72,8 +72,8 @@ class: center, middle
 class: inverse, center, middle
 
 # Culmen length of a bird
-```{r culmen, echo = FALSE, out.width = "25%", fig.align = "left"}
-include_graphics("img/culmen.jpg")
+```{r culmen, echo = FALSE, out.width = "55%", fig.align = "centre"}
+include_graphics("img/bird_culmen.png")
 ```
 
 
