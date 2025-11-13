@@ -36,7 +36,7 @@ Bird_data <- AVONET3_BirdTree %>%
 
 ## Research Question
 
-Investigating the relationship between beak length and trophic level within each habitat.
+What is the relationship between bird beak length, eating patterns, and trophic level across various habitats?
 
 
 ## Data
