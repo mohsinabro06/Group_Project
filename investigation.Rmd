@@ -66,6 +66,8 @@ ggplot(data  = Total_Habitat,
 
 
 ```{r}
+#forest birds data plot
+
 forest_data <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
   filter(Habitat == "Forest")
@@ -156,6 +158,7 @@ ggplot(data = grassland_birds,
        x = "Trophic Level",
        y= "Beak Length Culmen")
 ```
+
 ```{r}
 #woodland bird data plot
 
@@ -202,6 +205,7 @@ ggplot(data = woodland_birds,
        x = "Trophic Level",
        y= "Beak Length Culmen")
 ```
+
 ```{r}
 #wetland birds data plot
 
@@ -296,8 +300,106 @@ ggplot(data = plots_data,
        y= "Beak Length Culmen")
 ```
 
+```{r}
+#desert birds data plot
+
+desert_birds <- AVONET3_BirdTree %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
+   filter(Habitat == "Desert" & (Trophic.Level == "Scavenger" | !is.na(Trophic.Level)))
+
+total_trophic_level <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) 
+
+desert_birds <- left_join(total_trophic_level, desert_birds, by = "Trophic.Level") %>%
+  select(-Total.individuals) %>%
+  filter(Trophic.Level != "NA", total.birds > 0)
+
+orange_shades <- c("#FF6700", "#FF8C00", "#FF9F00", "#FFBF00")
+orange_shades <- orange_shades[1:length(unique(Bird_data$Trophic.Level))]
+
+desert_birds <- desert_birds %>%
+  filter(Trophic.Level != "NA")
+
+ggplot(data = desert_birds,
+       mapping = aes(x = Trophic.Level,
+                     y = total.birds,
+                     fill = Trophic.Level)) +
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  scale_fill_manual(values = orange_shades) +
+  labs(title = "Number of Birds in each Trophic Level",
+       subtitle = "Desert Habitat",
+       x = "Trophic Level",
+       y = "Number of Birds")
+
+ggplot(data = desert_birds,
+       mapping = aes( x = Trophic.Level,
+                      y = Beak.Length_Culmen,
+                      fill = Trophic.Level)) +
+  geom_boxplot() +
+  scale_fill_manual(values = orange_shades) +
+  theme_minimal()+
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  labs(title = "Culmen length of each Trophic Niche",
+       subtitle = "Desert Habitat",
+       x = "Trophic Level",
+       y= "Beak Length Culmen")
+
+```
 
 ```{r}
+#rock birds data plot
+
+rock_birds <- AVONET3_BirdTree %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
+   filter(Habitat == "Rock" & (Trophic.Level == "Scavenger" | !is.na(Trophic.Level)))
+
+total_trophic_level <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) 
+
+rock_birds <- left_join(total_trophic_level, rock_birds, by = "Trophic.Level") %>%
+  select(-Total.individuals) %>%
+  filter(Trophic.Level != "NA", total.birds > 0)
+
+grey_shades <- c("#515151", "#737373", "#959595", "#B6B6B6")
+grey_shades <- grey_shades[1:length(unique(Bird_data$Trophic.Level))]
+
+rock_birds <- rock_birds %>%
+  filter(Trophic.Level != "NA")
+
+ggplot(data = rock_birds,
+       mapping = aes(x = Trophic.Level,
+                     y = total.birds,
+                     fill = Trophic.Level)) +
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  scale_fill_manual(values = grey_shades) +
+  labs(title = "Number of Birds in each Trophic Level",
+       subtitle = "Rock Habitat",
+       x = "Trophic Level",
+       y = "Number of Birds")
+
+ggplot(data = rock_birds,
+       mapping = aes( x = Trophic.Level,
+                      y = Beak.Length_Culmen,
+                      fill = Trophic.Level)) +
+  geom_boxplot() +
+  scale_fill_manual(values = grey_shades) +
+  theme_minimal()+
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  labs(title = "Culmen length of each Trophic Niche",
+       subtitle = "Rock Habitat",
+       x = "Trophic Level",
+       y= "Beak Length Culmen")
+
+```
+
+
+```{r}
+#marine birds data plot
+
 marine_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
    filter(Habitat == "Marine" & (Trophic.Level == "Scavenger" | !is.na(Trophic.Level)))
@@ -348,6 +450,7 @@ ggplot(data = marine_birds,
 
 ```{r}
 #riverine birds data plot
+
 #findings: no data available for scavenger culmen length, but there are <100 riverine scavenger birds, there is a significantly large amount of carnivore birds
 #on average, the beak culmen of herbivores are greater
 
@@ -398,6 +501,8 @@ ggplot(data = riverine_birds,
 ```
 
 ```{r}
+#coastal birds data plot
+
 coastal_birds <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
    filter(Habitat == "Coastal")
@@ -445,6 +550,7 @@ ggplot(data = coastal_birds,
 
 ```{r}
 #human modified birds data plot
+
 #findings: there is <15 scavenger birds so barely shows up in the bar chart, but it shows that scavenger human modified birds have a greater beak culmen lengths on average compared to the other trophic levels
 #couple of carnivore outliers
 
