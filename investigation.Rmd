@@ -36,8 +36,8 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
 
 ```{r}
 Bird_data <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
-  filter(Total.individuals >5)
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche, Mass) %>%
+  filter(Total.individuals > 5)
  
 
 
@@ -117,7 +117,7 @@ ggplot(data = forest_data,
 #grassland bird data plot
 
 grassland_birds <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
+  select(Species3, Beak.Length_Culmen, Habitat, Trophic.Level) %>%
    filter(Habitat == "Grassland")
 
 total_trophic_level <- AVONET3_BirdTree %>%
@@ -125,7 +125,6 @@ total_trophic_level <- AVONET3_BirdTree %>%
   summarise(total.birds = sum(Total.individuals)) 
 
 grassland_birds <- left_join(total_trophic_level, grassland_birds, by = "Trophic.Level") %>%
-  select(-Total.individuals) %>%
   filter(Trophic.Level != "NA", total.birds > 0)
 
 greens <- c("#57B000", "#63CA00","#70E300", "#7CFC00")
@@ -639,7 +638,7 @@ filter(Trophic.Level == "Carnivore") %>%
 
 
 ```{r}
-birds.data_mass <- AVONET3_BirdTree %>%
+birds.data_mass <- Bird_data %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
   mutate(Mass_kg = Mass/1000,
          log_mass_kg = log(Mass_kg), log_culmen = log(Beak.Length_Culmen)) %>%
