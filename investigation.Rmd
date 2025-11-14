@@ -36,7 +36,8 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
 
 ```{r}
 Bird_data <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) 
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) %>%
+  filter(Total.individuals >5)
  
 
 
