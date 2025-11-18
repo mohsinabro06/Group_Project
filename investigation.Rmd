@@ -597,6 +597,40 @@ ggplot(data = plot_data,
        y= "Beak Length Culmen")
 ```
 
+```{r}
+
+#box plots of all the habitats' beak culmen length against trophic levels
+
+clean_data <- AVONET3_BirdTree %>%
+  filter(
+    !is.na(Habitat),
+    !is.na(Trophic.Level),
+    Trophic.Level != "NA",
+    Habitat != "NA"
+  )
+
+ggplot(
+  data= clean_data %>%
+    filter(!is.na(Habitat), !is.na(Trophic.Level)),
+  aes(x = Trophic.Level,
+      y = Beak.Length_Culmen,
+      fill = Trophic.Level)
+  ) +
+  
+  geom_boxplot(outlier.size = 0.8) +
+  facet_wrap(~ Habitat, ncol = 3, scales = "free_y") +
+  theme_minimal(base_size = 10) +
+  theme(axis.text.x = element_text(size = 7, angle = 20, hjist = 1,),
+        strip.text = element_text(size = 10, face = "bold"),
+        legend.position = "bottom") +
+  scale_fill_manual(values = blue) +
+  labs(
+    title = "Culmen Beak Length across different Trophic Levels",
+    subtitle = "Seperated by Habitat",
+    x = "Trophic Level",
+    y = "Culmen Beak Length"
+  )
+```
 
 ```{r}
 
