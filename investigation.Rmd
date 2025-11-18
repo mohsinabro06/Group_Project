@@ -640,9 +640,8 @@ ggplot(
   #arrange(Trophic.Niche) %>%
   #slice(- (5089:5093))
 all_culmens <- Bird_data %>%
-  filter(Trophic.Level != "NA") %>%
-  arrange(Trophic.Level) %>%
-filter(Trophic.Level != "NA")
+  filter(Trophic.Level != "NA",) %>%
+  arrange(Trophic.Level) 
 
 
   ggplot(data = all_culmens,
@@ -661,15 +660,6 @@ filter(Trophic.Level != "NA")
          fill = "Trophic Level") 
   
 ```
-
-```{r}
-carnivoire <- Bird_data %>%
-filter(Trophic.Level == "Carnivore") %>%
-  arrange(Trophic.Niche) %>%
-  filter(Trophic.Niche != "NA")
-```
-
-
 
 ```{r}
 birds.data_mass <- Bird_data %>%
