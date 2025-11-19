@@ -65,6 +65,14 @@ ggplot(data  = Total_Habitat,
        y = "Total Birds")
 ```
 
+```{r}
+expl.stats_birds <- Bird_data %>%
+  group_by(Trophic.Level) %>%
+  summarise(avg_culmen.length = mean(Beak.Length_Culmen,),
+         avg_mass = mean(Mass)) %>%
+  select(Trophic.Level, avg_culmen.length, avg_mass)
+```
+
 
 ```{r}
 #forest birds data plot
