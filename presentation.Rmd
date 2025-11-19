@@ -21,6 +21,7 @@ output:
 # the `xaringan` package that contains all of the code which allows you 
 # to create presentation slides in Rmarkdown
 install.packages('xaringan')
+install.packages("xaringanthemer")
 ```
 
 
@@ -37,6 +38,10 @@ library(readxl)
 ```{r setup, include=FALSE}
 # For better figure resolution
 knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618, out.width = "80%")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+style_xaringan(text_bold_color =  "red")
 ```
 
 ```{r load-data, include=FALSE}
@@ -65,17 +70,13 @@ class: center, middle
 - We also decided to separate the birds by habitat, because the food available will differ by each habitat, and consequently so will the eating habits (trophic level) of the birds. 
 ---
 # What variables are we investigating?
-- Habitat, 
+- Habitat, Trophic Level, Culmen Length and Mass
 
----
+- Culmen length of a bird
 
-class: inverse, center, middle
-
-# Culmen length of a bird
-```{r culmen, echo = FALSE, out.width = "55%", fig.align = "centre"}
+```{r culmen, echo = FALSE, out.width = "40%", fig.align = "Centre"}
 include_graphics("img/bird_culmen.png")
 ```
-
 
 ---
 
