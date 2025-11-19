@@ -633,35 +633,6 @@ ggplot(
 ```
 
 ```{r}
-
-# 5089-5093
-#carnivoire <- Bird_data %>%
-#filter(Trophic.Level == "Carnivore") %>%
-  #arrange(Trophic.Niche) %>%
-  #slice(- (5089:5093))
-all_culmens <- Bird_data %>%
-  filter(Trophic.Level != "NA",) %>%
-  arrange(Trophic.Level) 
-
-
-  ggplot(data = all_culmens,
-         mapping = aes(y = Beak.Length_Culmen, fill = Trophic.Level, x = Trophic.Level)) +
-  geom_boxplot() +
-    scale_fill_manual( values = c(
-      "Carnivore" = "#f0f9e8",
-      "Herbivore" = "#bae4bc",
-      "Omnivore" = "#7bccc4",
-      "Scavenger" = "#2b8cbe"
-    )) +
-    labs(title = "Culmen Lengths",
-         subtitle = "by Trophic Level",
-         y = "Culmen Length (cm)",
-         x = "Trophic Level",
-         fill = "Trophic Level") 
-  
-```
-
-```{r}
 birds.data_mass <- Bird_data %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
   mutate(Mass_kg = Mass/1000,
