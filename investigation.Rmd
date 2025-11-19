@@ -692,3 +692,57 @@ ggplot(Bird_data, aes(x = Beak.Length_Culmen, weight = Total.individuals)) +
 
 
 ```
+
+```{r}
+#bird_fit <- linear_reg() %>%
+  #set_engine("lm") %>%
+  #fit(Beak.Length_Culmen ~ Habitat + Trophic.Level + Mass, data = train_data) %>%
+  #tidy()
+
+#bird_fit
+
+
+size_data <- mutate(Bird_data,
+                    size =
+                    case_when(
+                      Beak.Length_Culmen < 50.0 ~ "Small",
+                      Beak.Length_Culmen >= 50.0 ~ "Big"
+                      ))
+
+bird_split <- initial_split(size_data, prop = 0.80)
+
+train_data <- training(bird_split)
+test_data  <- testing(bird_split)
+
+bird_rec <- recipe(
+  size ~ Habitat + Trophic.Level + Mass,       
+  data = train_data 
+  ) %>%
+  step_dummy(all_nominal(), -all_outcomes())
+
+summary(bird_rec)
+
+bird_mod <- linear_reg() %>%
+  set_engine("lm")
+
+
+bird_wkflow <- workflow() %>% 
+  add_model(bird_mod) %>% 
+  add_recipe(bird_rec)
+
+bird_fit <- bird_wkflow %>%
+  fit(data = train_data)
+
+bird_pred <- predict(bird_fit, test_data) %>% 
+  bind_cols(test_data)
+
+bird_pred
+
+bird_pred %>%
+  roc_curve(
+    truth = size,
+    .pred,
+    event_level = "second"
+  ) %>%
+  autoplot()
+```
