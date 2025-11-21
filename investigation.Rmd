@@ -732,8 +732,8 @@ ggplot(Bird_data, aes(x = Beak.Length_Culmen, weight = Total.individuals)) +
 size_data <- mutate(Bird_data,
                     size =
                     factor(case_when(
-                      Beak.Length_Culmen < 50.0 ~ "Small",
-                      Beak.Length_Culmen >= 50.0 ~ "Big"
+                      Beak.Length_Culmen < 25.0 ~ "Small",
+                      Beak.Length_Culmen >= 25.0 ~ "Big"
                       )))
 
 bird_split <- initial_split(size_data, prop = 0.80)
