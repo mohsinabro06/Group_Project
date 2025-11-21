@@ -21,6 +21,7 @@ library(RColorBrewer)
 library(broom)
 library(parsnip)
 library(tidymodels)
+library(knitr)
 
 # Add any other libraries here
 
@@ -35,6 +36,7 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
     sheet = "AVONET3_BirdTree")
 
 ```
+
 
 ```{r}
 Bird_data <- AVONET3_BirdTree %>%
@@ -65,7 +67,17 @@ ggplot(data  = Total_Habitat,
   labs(title = "Total bird count within each habitat",
        x = "Habitat",
        y = "Total Birds")
+
 ```
+
+```{r}
+expl.stats_birds <- Bird_data %>%
+  group_by(Trophic.Level) %>%
+  summarise(avg_culmen.length = mean(Beak.Length_Culmen,),
+         avg_mass = mean(Mass)) %>%
+  select(Trophic.Level, avg_culmen.length, avg_mass)
+```
+
 
 ```{r}
 
@@ -770,17 +782,6 @@ bird_pred %>%
     .pred_Small,
     event_level = "second"
   )
-
-
-cutoff_prob <- 0.8
-bird_pred %>%
-  mutate(
-    spam      = if_else(spam == 1, "Bird is Small", "Bird is not Small"),
-    spam_pred = if_else(.pred_1 > cutoff_prob, "Bird labelled Small", "Bird labelled Big")
-    ) %>%
-  count(bird_pred, size) %>%
-  pivot_wider(names_from = size, values_from = n) %>%
-  kable(col.names = c("", "Bird is Big", "Email is Small"))
 
 
 ```
