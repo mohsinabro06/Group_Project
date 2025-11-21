@@ -44,8 +44,6 @@ Bird_data <- AVONET3_BirdTree %>%
   filter(Total.individuals > 5)
  
 
-
-
 Total_Habitat <- Bird_data %>%
   group_by(Habitat) %>%
   summarise(total.birds = sum(Total.individuals)) %>%
