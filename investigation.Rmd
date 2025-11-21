@@ -72,6 +72,7 @@ ggplot(data  = Total_Habitat,
 
 total_trophic <- AVONET3_BirdTree %>%
   group_by(Trophic.Level) %>%
+<<<<<<< HEAD
   summarise(total.birds = n()) %>%
   filter(Trophic.Level != "NA")
 
@@ -90,6 +91,13 @@ ggplot(data = total_trophic,
 
 
 
+=======
+  summarise(avg_culmen.length = mean(Beak.Length_Culmen,),
+         avg_mass = mean(Mass),
+         med_culmen.length = median(Beak.Length_Culmen),
+         med_mass = median(Mass)) %>%
+  select(Trophic.Level, avg_culmen.length, avg_mass, med_culmen.length, med_mass)
+>>>>>>> 65806af6d95c0f23fedea3d0f9ffd31667db1873
 ```
 
 
