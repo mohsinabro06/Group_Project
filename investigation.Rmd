@@ -72,7 +72,6 @@ ggplot(data  = Total_Habitat,
 
 total_trophic <- AVONET3_BirdTree %>%
   group_by(Trophic.Level) %>%
-<<<<<<< HEAD
   summarise(total.birds = n()) %>%
   filter(Trophic.Level != "NA")
 
@@ -89,15 +88,6 @@ ggplot(data = total_trophic,
        x = "Trophic Level",
        y = "Total Birds")
 
-
-
-=======
-  summarise(avg_culmen.length = mean(Beak.Length_Culmen,),
-         avg_mass = mean(Mass),
-         med_culmen.length = median(Beak.Length_Culmen),
-         med_mass = median(Mass)) %>%
-  select(Trophic.Level, avg_culmen.length, avg_mass, med_culmen.length, med_mass)
->>>>>>> 65806af6d95c0f23fedea3d0f9ffd31667db1873
 ```
 
 
@@ -731,10 +721,10 @@ ggplot(Bird_data, aes(x = Beak.Length_Culmen, weight = Total.individuals)) +
 
 size_data <- mutate(Bird_data,
                     size =
-                    case_when(
+                    factor(case_when(
                       Beak.Length_Culmen < 50.0 ~ "Small",
                       Beak.Length_Culmen >= 50.0 ~ "Big"
-                      ))
+                      )))
 
 bird_split <- initial_split(size_data, prop = 0.80)
 
@@ -749,8 +739,8 @@ bird_rec <- recipe(
 
 summary(bird_rec)
 
-bird_mod <- linear_reg() %>%
-  set_engine("lm")
+bird_mod <- logistic_reg() %>%
+  set_engine("glm")
 
 
 bird_wkflow <- workflow() %>% 
@@ -760,7 +750,7 @@ bird_wkflow <- workflow() %>%
 bird_fit <- bird_wkflow %>%
   fit(data = train_data)
 
-bird_pred <- predict(bird_fit, test_data) %>% 
+bird_pred <- predict(bird_fit, test_data, type = "prob") %>% 
   bind_cols(test_data)
 
 bird_pred
@@ -768,8 +758,29 @@ bird_pred
 bird_pred %>%
   roc_curve(
     truth = size,
-    .pred,
+    .pred_Small,
     event_level = "second"
   ) %>%
   autoplot()
+
+
+bird_pred %>%
+  roc_auc(
+    truth = size,
+    .pred_Small,
+    event_level = "second"
+  )
+
+
+cutoff_prob <- 0.8
+bird_pred %>%
+  mutate(
+    spam      = if_else(spam == 1, "Bird is Small", "Bird is not Small"),
+    spam_pred = if_else(.pred_1 > cutoff_prob, "Bird labelled Small", "Bird labelled Big")
+    ) %>%
+  count(bird_pred, size) %>%
+  pivot_wider(names_from = size, values_from = n) %>%
+  kable(col.names = c("", "Bird is Big", "Email is Small"))
+
+
 ```
