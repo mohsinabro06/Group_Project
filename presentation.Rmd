@@ -40,9 +40,25 @@ library(readxl)
 knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618, out.width = "80%")
 ```
 
-```{r xaringan-themer, include=FALSE, warning=FALSE}
-style_xaringan(text_bold_color =  "red")
+```{r xaringan-tachyons, echo=FALSE}
+xaringanExtra::use_tachyons()
 ```
+
+```{r xaringanExtra, echo = FALSE}
+xaringanExtra::use_progress_bar(color = "#548B54", location = "top")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#4682B4",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+
+```
+
 
 ```{r load-data, include=FALSE}
 # Load your data here
@@ -50,34 +66,32 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
     sheet = "AVONET3_BirdTree")
 ```
 
-```{r include=FALSE}
 
-#Background image
-style_xaringan(
-  title_slide_background_image = "img/parrot.jpg"
-  )
-```
+# Introduction
 
-class: center, middle
+We chose to investigate the AVONET Bird dataset. This dataset includes many traits of various species of birds, such as physical characteristics, geographical location and other ecological variables.
 
-## Investigating how trophic level affects the physical characteristics of birds within each habitat
+We analysed this data in order to answer the following research question:
 
----
-# What choices we made and why
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
+What is the relationship between beak length, mass, and trophic level amongst different habitats?
 
-- We decided to focus on how the eating habits of the birds (characterized by their trophic level), affects their physical characteristics because we wanted to investigate how the type of food each bird consumes will affect their appearance.
+.tr[
 
-- We also decided to separate the birds by habitat, because the food available will differ by each habitat, and consequently so will the eating habits (trophic level) of the birds. 
+]]
+
+
 ---
 # What variables are we investigating?
 - Habitat, Trophic Level, Culmen Length and Mass
 
-- Culmen length of a bird
+- Culmen length of a bird:
 
 ```{r culmen, echo = FALSE, out.width = "40%", fig.align = "Centre"}
 include_graphics("img/bird_culmen.png")
 ```
 
+- We decided to separate the birds by habitat, because the food available will differ by each habitat, and consequently so will the eating habits (trophic level) of the birds. 
 ---
 
 class: inverse, middle, center
