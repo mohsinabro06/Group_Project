@@ -53,7 +53,7 @@ library(xaringanthemer)
 style_mono_accent(
   base_color = "#4682B4",
   header_font_google = google_font("Josefin Sans"),
-  text_font_google   = google_font("Montserrat", "300", "300i"),
+  text_font_google   = google_font("Montserrat", "300", "300"),
   code_font_google   = google_font("Fira Mono")
 )
 
@@ -71,6 +71,8 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
 
 We chose to investigate the AVONET Bird dataset. This dataset includes many traits of various species of birds, such as physical characteristics, geographical location and other ecological variables.
 
+The dataset contains 9,993 observations with 36 columns. However we will only be utilising 6 variables for our investigation.
+
 We analysed this data in order to answer the following research question:
 
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
@@ -82,33 +84,103 @@ What is the relationship between beak length, mass, and trophic level amongst di
 
 
 ---
-# What variables are we investigating?
-- Habitat, Trophic Level, Culmen Length and Mass
-
-- Culmen length of a bird:
-
-```{r culmen, echo = FALSE, out.width = "40%", fig.align = "Centre"}
-include_graphics("img/bird_culmen.png")
-```
+# The variables being used:
+.pull-left[
+- Species, Total Individuals, Habitat, Trophic Level, Culmen Length and Mass
 
 - We decided to separate the birds by habitat, because the food available will differ by each habitat, and consequently so will the eating habits (trophic level) of the birds. 
+]
+--
+.pull-right[
+- Culmen length of a bird:
+
+```{r culmen, out.width = "100%", fig.width = 4, echo = FALSE}
+include_graphics("img/bird_culmen.png")
+```
+]
 ---
 
-class: inverse, middle, center
+# Total individuals within each habitat
+.pull-left[
+- This bar chart shows the number of total individuals recorded within each habitat.
 
-# Using xaringan
-
----
-
-# xaringan
-
-- The presentation is created using the `xaringan` package
-
-- Use `---` to separate slides and `--` for incremental builds
+- The visualisation shows that the overwhelming majority of individuals were recorded within the forest habitat.
+]
 
 --
 
-- Like this
+.pull-right[
+```{r, out.width= "100%", fig.width= 8, echo=FALSE}
+Bird_data <- AVONET3_BirdTree %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche, Mass) %>%
+  filter(Total.individuals > 5)
+ 
+
+Total_Habitat <- Bird_data %>%
+  group_by(Habitat) %>%
+  summarise(total.birds = sum(Total.individuals)) %>%
+  filter(Habitat != "NA")
+
+
+
+ggplot(data  = Total_Habitat, 
+       aes(x = Habitat,
+           y = total.birds,
+           fill = Habitat)) +
+         geom_col() +
+  theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10)) +
+      scale_fill_brewer(type = "div",
+                        palette = 9,
+                        direction = 1,
+                        aesthetics = "fill") +
+  labs(title = "Total bird count within each habitat",
+       x = "Habitat",
+       y = "Total Birds")
+```
+]
+
+---
+
+# Scatterplot of mass and culmen length
+
+.pull-left[
+- This shows a positive correlation between the logarithm of the two variables
+
+- The variables have a logarithmic relationship
+]
+
+--
+.pull-right[
+```{r,out.width= "100%", fig.width= 4, echo=FALSE}
+birds.data_mass <- Bird_data %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
+  mutate(Mass_kg = Mass/1000,
+         log_mass_kg = log(Mass_kg), log_culmen = log(Beak.Length_Culmen)) %>%
+  filter(Trophic.Level != "NA")
+
+ggplot(data = birds.data_mass,
+       mapping = aes(x = log_culmen,
+                     y = log_mass_kg)) +
+  geom_point(alpha = 0.6, size = 0.6, mapping = aes(colour = Trophic.Level)) +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(
+    title = "Bird Culmen Length vs. Mass",
+    subtitle = "by trophic level",
+    x = "Log of Culmen Length (cm)", 
+    y = "Log of Mass (kg)",
+    colour = "Trophic Level"
+  ) +
+  scale_colour_manual(values = c(
+    "Carnivore" = "#88419d",
+    "Herbivore" = "#d7b5d8",
+    "Omnivore" = "#41b6c4",
+    "Scavenger" = "#0570b0"
+  )) +
+  theme_minimal() +
+  theme(legend.title = element_text(size = 12))
+```
+]
 
 ---
 
