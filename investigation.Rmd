@@ -678,7 +678,7 @@ ggplot(data = birds.data_mass,
        mapping = aes(x = log_culmen,
                      y = log_mass_kg)) +
   geom_point(alpha = 0.6, size = 0.6, mapping = aes(colour = Trophic.Level)) +
-  geom_smooth(method = lm, se = FALSE) +
+  geom_smooth(method = lm, se = FALSE, formula = y ~ x) +
   labs(
     title = "Bird Culmen Length vs. Mass",
     subtitle = "by trophic level",

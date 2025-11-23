@@ -142,6 +142,27 @@ ggplot(data  = Total_Habitat,
 
 ---
 
+```{r, echo=FALSE}
+histogram <- ggplot(Bird_data, 
+       aes(
+         x = Beak.Length_Culmen, 
+         weight = Total.individuals)) +
+  geom_histogram(binwidth = 0.2, fill = "steelblue") +
+  labs(title = "Histogram of Beak Lengths (Weighted by Individuals)",
+       x = "Beak Length (Culmen)", 
+       y = "Total Individuals") +
+  scale_x_continuous(limits = c(0, 100)) +
+  theme_minimal() +
+  geom_vline(xintercept = c(8, 25), 
+             linetype = "dashed", 
+             color = "red") 
+
+suppressWarnings(print(histogram))
+```
+
+
+---
+
 # Scatterplot of mass and culmen length
 
 .pull-left[
@@ -152,7 +173,7 @@ ggplot(data  = Total_Habitat,
 
 --
 .pull-right[
-```{r,out.width= "100%", fig.width= 4, echo=FALSE}
+```{r,out.width= "100%", fig.width= 6, echo=FALSE}
 birds.data_mass <- Bird_data %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
   mutate(Mass_kg = Mass/1000,
@@ -163,7 +184,7 @@ ggplot(data = birds.data_mass,
        mapping = aes(x = log_culmen,
                      y = log_mass_kg)) +
   geom_point(alpha = 0.6, size = 0.6, mapping = aes(colour = Trophic.Level)) +
-  geom_smooth(method = lm, se = FALSE) +
+  geom_smooth(method = lm, se = FALSE, formula = y ~ x) +
   labs(
     title = "Bird Culmen Length vs. Mass",
     subtitle = "by trophic level",
