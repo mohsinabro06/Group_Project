@@ -75,6 +75,7 @@ The dataset contains 9,993 observations with 36 columns. However we will only be
 
 We analysed this data in order to answer the following research question:
 
+
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
 What is the relationship between beak length, mass, and trophic level amongst different habitats?
 
@@ -102,14 +103,6 @@ include_graphics("img/bird_culmen.png")
 
 # Total individuals within each habitat
 .pull-left[
-- This bar chart shows the number of total individuals recorded within each habitat.
-
-- The visualisation shows that the overwhelming majority of individuals were recorded within the forest habitat.
-]
-
---
-
-.pull-right[
 ```{r, out.width= "100%", fig.width= 8, echo=FALSE}
 Bird_data <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche, Mass) %>%
@@ -140,8 +133,20 @@ ggplot(data  = Total_Habitat,
 ```
 ]
 
+--
+
+.pull-right[
+- This bar chart shows the number of total individuals recorded within each habitat.
+
+- The visualisation shows that the overwhelming majority of individuals were recorded within the forest habitat.
+
+]
+
 ---
 
+# Histrogram showing frequency of culmen length
+
+.pull-left[
 ```{r, echo=FALSE}
 histogram <- ggplot(Bird_data, 
        aes(
@@ -159,20 +164,20 @@ histogram <- ggplot(Bird_data,
 
 suppressWarnings(print(histogram))
 ```
+]
 
+--
+
+.pull-right[
+- Shows the spread of culmen length amongst all birds
+
+]
 
 ---
 
 # Scatterplot of mass and culmen length
 
 .pull-left[
-- This shows a positive correlation between the logarithm of the two variables
-
-- The variables have a logarithmic relationship
-]
-
---
-.pull-right[
 ```{r,out.width= "100%", fig.width= 6, echo=FALSE}
 birds.data_mass <- Bird_data %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
@@ -201,6 +206,14 @@ ggplot(data = birds.data_mass,
   theme_minimal() +
   theme(legend.title = element_text(size = 12))
 ```
+]
+
+--
+.pull-right[
+- This shows a positive correlation between the logarithm of the two variables
+
+- The variables have a logarithmic relationship
+
 ]
 
 ---
