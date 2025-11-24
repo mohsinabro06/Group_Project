@@ -1,7 +1,7 @@
 ---
-title: "Bird data"
-subtitle: "Presentation subtitle (if any)"
-author: "Fire Emoji <br> Beth, Beatrice, Faaiz, Mohsin"
+title: "Factors affecting physical characteristics of birds"
+subtitle: ""
+author: "Fire Emoji (🔥🔥🔥🔥) <br> Beth, Beatrice, Faaiz, Mohsin"
 institute: "University of Edinburgh"
 date: "`r Sys.Date()`"
 output:
@@ -22,6 +22,7 @@ output:
 # to create presentation slides in Rmarkdown
 install.packages('xaringan')
 install.packages("xaringanthemer")
+install.packages("kableExtra")
 ```
 
 
@@ -33,6 +34,7 @@ library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
 library(readxl)
+library(kableExtra)
 ```
 
 ```{r setup, include=FALSE}
@@ -51,7 +53,7 @@ xaringanExtra::use_progress_bar(color = "#548B54", location = "top")
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library(xaringanthemer)
 style_mono_accent(
-  base_color = "#4682B4",
+  base_color = "#556B2F",
   header_font_google = google_font("Josefin Sans"),
   text_font_google   = google_font("Montserrat", "300", "300"),
   code_font_google   = google_font("Fira Mono")
@@ -89,7 +91,7 @@ What is the relationship between beak length, mass, and trophic level amongst di
 .pull-left[
 - Species, Total Individuals, Habitat, Trophic Level, Culmen Length and Mass
 
-- We decided to separate the birds by habitat, because the food available will differ by each habitat, and consequently so will the eating habits (trophic level) of the birds. 
+- We decided to separate the birds by habitat, because we assumed the food available will differ by each habitat, and consequently so will the eating habits of the birds. 
 ]
 --
 .pull-right[
@@ -98,6 +100,7 @@ What is the relationship between beak length, mass, and trophic level amongst di
 ```{r culmen, out.width = "100%", fig.width = 4, echo = FALSE}
 include_graphics("img/bird_culmen.png")
 ```
+<br> by Beatrice
 ]
 ---
 
@@ -169,16 +172,19 @@ suppressWarnings(print(histogram))
 --
 
 .pull-right[
-- Shows the spread of culmen length amongst all birds
+- This shows that the majority of culmen lengths lie between 8 and 25 cm.
+
+Calculate the upper and lower quartile?
 
 ]
 
 ---
 
 # Scatterplot of mass and culmen length
+### With a linear regression
 
 .pull-left[
-```{r,out.width= "100%", fig.width= 6, echo=FALSE}
+```{r, out.width= "100%", fig.width= 6, echo=FALSE}
 birds.data_mass <- Bird_data %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
   mutate(Mass_kg = Mass/1000,
@@ -193,7 +199,7 @@ ggplot(data = birds.data_mass,
   labs(
     title = "Bird Culmen Length vs. Mass",
     subtitle = "by trophic level",
-    x = "Log of Culmen Length (cm)", 
+    x = "Log of Culmen Length (mm)", 
     y = "Log of Mass (kg)",
     colour = "Trophic Level"
   ) +
@@ -208,44 +214,102 @@ ggplot(data = birds.data_mass,
 ```
 ]
 
---
-.pull-right[
-- This shows a positive correlation between the logarithm of the two variables
 
-- The variables have a logarithmic relationship
+--
+```{r, echo=FALSE}
+linear_reg() %>%
+  set_engine("lm") %>%
+  fit(log_mass_kg ~ log_culmen, data = birds.data_mass) %>%
+  tidy()
+```
+.pull-right[
+
+- The scatterplot shows a positive correlation between the log of the variables.
+
+- The linear regression gives the equation log(Mass_kg) = -9.585 + 2.085*log(Culmen Length)
 
 ]
 
 ---
 
-# Layouts
-
-You can use plain text
-
-- or bullet points
+# Model Analysis
+## Logistic Regression
 
 .pull-left[
-or text in two columns $^*$
-]
-.pull-right[
-- like
-- this
-]
+```{r, echo=FALSE}
+#setting up the ROC curve 
+size_data <- mutate(Bird_data,
+                    size =
+                    factor(case_when(
+                      Beak.Length_Culmen < 25.0 ~ "Small",
+                      Beak.Length_Culmen >= 25.0 ~ "Big"
+                      )))
 
-.footnote[
-[*] And add footnotes
-]
+bird_split <- initial_split(size_data, prop = 0.80)
 
----
+train_data <- training(bird_split)
+test_data  <- testing(bird_split)
 
-# Code
+bird_rec <- recipe(
+  size ~ Habitat + Trophic.Level + Mass,       
+  data = train_data 
+  ) %>%
+  step_dummy(all_nominal(), -all_outcomes())
 
-```{r boring-regression}
-# a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
+bird_mod <- logistic_reg() %>%
+  set_engine("glm") 
+
+bird_wkflow <- workflow() %>% 
+  add_model(bird_mod) %>% 
+  add_recipe(bird_rec)
+
+bird_fit <- bird_wkflow %>%
+  fit(data = train_data)
 ```
+
+]
+---
+# Model Analysis
+## ROC Curve
+
+.pull-left[
+```{r, out.width = "100%", echo=FALSE}
+bird_pred <- predict(bird_fit, test_data, type = "prob") %>% 
+  bind_cols(test_data)
+
+bird_pred %>%
+  roc_curve(
+    truth = size,
+    .pred_Small,
+    event_level = "second"
+  ) %>%
+  autoplot()
+
+```
+
+]
+```{r, fig.width = 3, echo=FALSE}
+cutoff_prob <- 0.5
+bird_table <- bird_pred %>%
+  mutate(
+    size      = if_else(size == "Small", "Bird Beak is Small", "Bird Beak is Big"),
+    size_pred = if_else(.pred_Small > cutoff_prob, "Bird labelled Small", "Bird labelled Big")
+    ) %>%
+  count(size_pred, size) %>%
+  pivot_wider(names_from = size, values_from = n) 
+
+bird_table %>%
+  kbl() %>%
+  kable_styling(font_size = 18)
+
+```
+.pull-right[
+- The area under the ROC curve is 0.868, indicating the logistic model has great predictive strength
+
+- The sensitivity is 0.948, and specificity 0.560
+]
+
+
 
 ---
 
@@ -300,7 +364,7 @@ kable(head(iris), format = "html")
 # Images
 
 ```{r castle, echo = FALSE, out.width = "55%", fig.align = "center", fig.cap = "Image credit: Photo by Jörg Angeli on Unsplash."}
-include_graphics("img/edinburgh-castle.jpg")
+include_graphics("img/bird2.jpg")
 ```
 
 Or you can also include a full page image. See next slide.
