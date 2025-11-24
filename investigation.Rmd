@@ -682,7 +682,7 @@ ggplot(data = birds.data_mass,
   labs(
     title = "Bird Culmen Length vs. Mass",
     subtitle = "by trophic level",
-    x = "Log of Culmen Length (cm)", 
+    x = "Log of Culmen Length (mm)", 
     y = "Log of Mass (kg)",
     colour = "Trophic Level"
   ) +
