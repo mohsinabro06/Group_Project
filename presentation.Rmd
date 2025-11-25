@@ -172,9 +172,11 @@ suppressWarnings(print(histogram))
 --
 
 .pull-right[
-- This shows that the majority of culmen lengths lie between 8 and 25 mm.
+- We calculated that three quarters of the birds have culmen lengths between the values of 8 and 25
 
 - We calculated that the median of the Culmen Lengths was 19.6 mm
+
+- There were few values above 100 mm, but we changed the scale of the visualisation in order to increase readability
 
 ]
 
@@ -227,6 +229,8 @@ linear_reg() %>%
 - The scatterplot shows a positive correlation between the log of the variables.
 
 - The linear regression gives the equation log(Mass_kg) = -9.585 + 2.085*log(Culmen Length)
+
+- Birds in the carnivore trophic level has the largest spread between data points, due to the fact it is the largest trophic level and so will contain the most variety.
 
 ]
 
@@ -282,6 +286,8 @@ bird_pred %>%
 ```
 
 ]
+
+--
 ```{r, fig.width = 3, echo=FALSE}
 cutoff_prob <- 0.5
 bird_table <- bird_pred %>%
@@ -298,22 +304,16 @@ bird_table %>%
 
 ```
 .pull-right[
-- We created a logistic model which predicts the beak length of a bird based on habitat, mass and trophic level
+- We created a logistic model which predicts the beak length of a bird based on the factors; habitat, mass and trophic level
 
-- The median of culmen lengths is 19.6 mm so we decided to split beak lengths into big and small by the bound 20 mm
+- The median of culmen lengths is 19.6 mm so we decided to split beak lengths into big and small by the cutoff 20 mm
 
 - The area under the ROC curve is 0.868, indicating the logistic model has great predictive strength
 
 - The sensitivity is 0.933, and specificity 0.688
+
+- The model has overall good predictive strength
 ]
-
----
-
-# Images
-
-```{r castle, echo = FALSE, out.width = "55%", fig.align = "center"}
-include_graphics("img/bird2.jpg")
-```
 
 ---
 
