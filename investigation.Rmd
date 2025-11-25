@@ -74,6 +74,7 @@ expl.stats_birds <- Bird_data %>%
   summarise(avg_culmen.length = mean(Beak.Length_Culmen,),
          avg_mass = mean(Mass)) %>%
   select(Trophic.Level, avg_culmen.length, avg_mass)
+
 ```
 
 
@@ -738,8 +739,8 @@ ggplot(Bird_data,
 size_data <- mutate(Bird_data,
                     size =
                     factor(case_when(
-                      Beak.Length_Culmen < 25.0 ~ "Small",
-                      Beak.Length_Culmen >= 25.0 ~ "Big"
+                      Beak.Length_Culmen < 20.0 ~ "Small",
+                      Beak.Length_Culmen >= 20.0 ~ "Big"
                       )))
 
 bird_split <- initial_split(size_data, prop = 0.80)
