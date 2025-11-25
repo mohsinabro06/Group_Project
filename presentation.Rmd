@@ -172,9 +172,9 @@ suppressWarnings(print(histogram))
 --
 
 .pull-right[
-- This shows that the majority of culmen lengths lie between 8 and 25 cm.
+- This shows that the majority of culmen lengths lie between 8 and 25 mm.
 
-Calculate the upper and lower quartile?
+- We calculated that the median of the Culmen Lengths was 19.6 mm
 
 ]
 
@@ -231,18 +231,13 @@ linear_reg() %>%
 ]
 
 ---
-
-# Model Analysis
-## Logistic Regression
-
-.pull-left[
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 #setting up the ROC curve 
 size_data <- mutate(Bird_data,
                     size =
                     factor(case_when(
-                      Beak.Length_Culmen < 25.0 ~ "Small",
-                      Beak.Length_Culmen >= 25.0 ~ "Big"
+                      Beak.Length_Culmen < 20.0 ~ "Small",
+                      Beak.Length_Culmen >= 20.0 ~ "Big"
                       )))
 
 bird_split <- initial_split(size_data, prop = 0.80)
@@ -265,15 +260,14 @@ bird_wkflow <- workflow() %>%
 
 bird_fit <- bird_wkflow %>%
   fit(data = train_data)
+
 ```
 
-]
----
+
 # Model Analysis
-## ROC Curve
 
 .pull-left[
-```{r, out.width = "100%", echo=FALSE}
+```{r, out.width = "120%", fig.width= 5, echo=FALSE}
 bird_pred <- predict(bird_fit, test_data, type = "prob") %>% 
   bind_cols(test_data)
 
@@ -304,77 +298,23 @@ bird_table %>%
 
 ```
 .pull-right[
+- We created a logistic model which predicts the beak length of a bird based on habitat, mass and trophic level
+
+- The median of culmen lengths is 19.6 mm so we decided to split beak lengths into big and small by the bound 20 mm
+
 - The area under the ROC curve is 0.868, indicating the logistic model has great predictive strength
 
-- The sensitivity is 0.948, and specificity 0.560
+- The sensitivity is 0.933, and specificity 0.688
 ]
-
-
-
----
-
-# Plots
-
-```{r recode-species, echo = FALSE}
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-iris_modified <- iris %>%
-  mutate(Species = fct_other(Species, keep = "setosa"))
-```
-
-```{r plot-iris, echo = FALSE}
-# Code hidden with echo = FALSE
-# Uses modified iris dataset from previous chunk
-# Play around with height and width until you're happy with the look
-ggplot(data = iris_modified, mapping = aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
-  geom_point() + 
-  theme_minimal() # theme options: https://ggplot2.tidyverse.org/reference/ggtheme.html
-```
-
----
-
-## Plot and text
-
-.pull-left[
-- Some text
-- goes here
-]
-.pull-right[
-```{r warning=FALSE, out.width="100%", fig.width=4, echo=FALSE}
-# see how I changed out.width and fig.width from defaults
-# to make the figure bigger
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot() +
-  theme_minimal()
-```
-]
-
----
-
-# Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-```{r iris-table, echo = FALSE}
-kable(head(iris), format = "html")
-```
 
 ---
 
 # Images
 
-```{r castle, echo = FALSE, out.width = "55%", fig.align = "center", fig.cap = "Image credit: Photo by Jörg Angeli on Unsplash."}
+```{r castle, echo = FALSE, out.width = "55%", fig.align = "center"}
 include_graphics("img/bird2.jpg")
 ```
 
-Or you can also include a full page image. See next slide.
-
----
-
-
-class: inverse, center, middle
-background-image: url(img/edinburgh-castle.jpg)
-background-size: contain
 ---
 
 # Math Expressions
@@ -395,15 +335,4 @@ Limitations:
 
 1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
 
----
 
-# Feeling adventurous?
-
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
-
-- You are welcome to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
-
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
-
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.
