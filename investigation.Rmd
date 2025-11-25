@@ -741,8 +741,8 @@ Bird_data %>%
 size_data <- mutate(Bird_data,
                     size =
                     factor(case_when(
-                      Beak.Length_Culmen < 20.0 ~ "Small",
-                      Beak.Length_Culmen >= 20.0 ~ "Big"
+                      Beak.Length_Culmen < 20.0 ~ "small",
+                      Beak.Length_Culmen >= 20.0 ~ "big"
                       )))
 
 bird_split <- initial_split(size_data, prop = 0.80)
@@ -777,7 +777,7 @@ bird_pred
 bird_pred %>%
   roc_curve(
     truth = size,
-    .pred_Small,
+    .pred_small,
     event_level = "second"
   ) %>%
   autoplot()
@@ -786,22 +786,22 @@ bird_pred %>%
 bird_pred %>%
   roc_auc(
     truth = size,
-    .pred_Small,
+    .pred_small,
     event_level = "second"
   )
 
 cutoff_prob <- 0.5
 bird_table <- bird_pred %>%
   mutate(
-    size      = if_else(size == "Small", "Bird Beak is Small", "Bird Beak is Big"),
-    size_pred = if_else(.pred_Small > cutoff_prob, "Bird labelled Small", "Bird labelled Big")
+    size      = if_else(size == "small", "Bird beak is small", "Bird beak is big"),
+    size_pred = if_else(.pred_small > cutoff_prob, "Bird beak labelled as small", "Bird beak labelled as big")
     ) %>%
   count(size_pred, size) %>%
   pivot_wider(names_from = size, values_from = n) 
 
 bird_table
 #%>%
-#  kable(col.names = c("", "Bird Beak is Big", "Bird Beak is Small"))
+#  kable(col.names = c("", "Bird Beak is big", "Bird Beak is small"))
 
 sensitivity <- 415/(415+30)
 sensitivity
