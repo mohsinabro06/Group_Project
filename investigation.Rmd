@@ -801,8 +801,8 @@ bird_table
 #%>%
 #  kable(col.names = c("", "Bird Beak is Big", "Bird Beak is Small"))
 
-sensitivity <- 585/(585+32)
+sensitivity <- 415/(415+30)
 sensitivity
-specificity <- 155/(155+122)
+specificity <- 309/(309+140)
 specificity
 ```
