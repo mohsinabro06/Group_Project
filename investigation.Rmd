@@ -22,6 +22,7 @@ library(broom)
 library(parsnip)
 library(tidymodels)
 library(knitr)
+library(dplyr)
 
 # Add any other libraries here
 
@@ -637,6 +638,11 @@ ggplot(data = plot_data,
 
 #box plots of all the habitats' beak culmen length against trophic levels
 
+mean_culmen <- AVONET3_BirdTree %>%
+  group_by(Habitat, Trophic.Level) %>%
+  summarise(mean_culmen = mean(Beak.Length_Culmen, na.rm = TRUE)) %>%
+  ungroup()
+
 clean_data <- AVONET3_BirdTree %>%
   filter(
     !is.na(Habitat),
@@ -655,8 +661,9 @@ ggplot(
   
   geom_boxplot(outlier.size = 0.8) +
   facet_wrap(~ Habitat, ncol = 3, scales = "free_y") +
+  scale_y_log10() +
   theme_minimal(base_size = 10) +
-  theme(axis.text.x = element_text(size = 7, angle = 20, hjist = 1,),
+  theme(axis.text.x = element_text(size = 7, angle = 20),
         strip.text = element_text(size = 10, face = "bold"),
         legend.position = "bottom") +
   scale_fill_manual(values = blue) +
