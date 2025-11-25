@@ -724,6 +724,8 @@ ggplot(Bird_data,
 
 # beak length values exist beyond 250, but for the sake of simplicity the graph is restricted to values uptil 100.
 
+Bird_data %>%
+  arrange(Total.individuals)
 
 ```
 
