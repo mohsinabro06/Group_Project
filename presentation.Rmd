@@ -71,12 +71,13 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
 
 # Introduction
 
-We chose to investigate the AVONET Bird dataset. This dataset includes many traits of various species of birds, such as physical characteristics, geographical location and other ecological variables.
+We chose to investigate the AVONET Bird dataset. This dataset includes many traits of various species of birds, such as ecological variables, morphological traits and information on geographical conditions of the birds.
 
-The dataset contains 9,993 observations with 36 columns. However we will only be utilising 6 variables for our investigation.
+The dataset contains 9,993 observations with 36 columns, with each observation corresponding to a recorded bird species. However we will only be utilising 6 variables for our investigation.
 
-We analysed this data in order to answer the following research question:
+We tidied the data to only include these variables then perfomed analysis, in order to answer the following research question:
 
+--
 
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
 What is the relationship between beak length, mass, and trophic level amongst different habitats?
@@ -85,13 +86,19 @@ What is the relationship between beak length, mass, and trophic level amongst di
 
 ]]
 
-
 ---
 # The variables being used:
 .pull-left[
 - Species, Total Individuals, Habitat, Trophic Level, Culmen Length and Mass
 
-- We decided to separate the birds by habitat, because we assumed the food available will differ by each habitat, and consequently so will the eating habits of the birds. 
+Our assumptions for these variables are:
+- Each species is correctly assigned to a habitat
+
+- Data is representative of entire population
+
+- Age related variation was minimal
+
+- Each species falls into one of the four categories for trophic level
 ]
 --
 .pull-right[
@@ -141,7 +148,27 @@ ggplot(data  = Total_Habitat,
 .pull-right[
 - This bar chart shows the number of total individuals recorded within each habitat.
 
-- The visualisation shows that the overwhelming majority of individuals were recorded within the forest habitat.
+- The visualisation shows a strong imbalance in bird count across habitat, with forest having over 40,000 individuals
+
+- Shrubland and woodland have moderate counts, but the rest have fewer than 4,000 individuals
+
+- Suggests some samples may not be fully representative of their population
+
+]
+
+---
+#How Trophic Level affects Culmen Length in each Habitat
+
+.pull-left[
+```{r, out.width= "100%", echo=FALSE}
+include_graphics("img/boxplotfacet.png")
+```
+
+]
+--
+.pull-left[
+- Illustrate the distribution of culmen lengths across various trophic levels within each habitat
+
 
 ]
 
@@ -172,18 +199,19 @@ suppressWarnings(print(histogram))
 --
 
 .pull-right[
-- We calculated that three quarters of the birds have culmen lengths between the values of 8 and 25
+- We calculated that three quarters of the birds have culmen lengths between the values of 8 and 25, with the peak occurring around 15mm
 
-- We calculated that the median of the Culmen Lengths was 19.6 mm
+- As beak length increases past 25 mm the number of individuals greatly decreases
 
 - There were few values above 100 mm, but we changed the scale of the visualisation in order to increase readability
+
+- The histogram is positively skewed, so the mean is higher than the median
 
 ]
 
 ---
 
 # Scatterplot of mass and culmen length
-### With a linear regression
 
 .pull-left[
 ```{r, out.width= "100%", fig.width= 6, echo=FALSE}
@@ -214,6 +242,8 @@ ggplot(data = birds.data_mass,
   theme_minimal() +
   theme(legend.title = element_text(size = 12))
 ```
+
+- The scatterplot shows a positive correlation between the log of the variables.
 ]
 
 
@@ -226,23 +256,29 @@ linear_reg() %>%
 ```
 .pull-right[
 
-- The scatterplot shows a positive correlation between the log of the variables.
-
 - The linear regression gives the equation log(Mass_kg) = -9.585 + 2.085*log(Culmen Length)
+
+- So for every 1% increase in culmen length, the mass increases by 2.085%, birds with longer culmen lengths are able to consume a larger food sources, and so it makes sense that they will have a larger mass
 
 - Birds in the carnivore trophic level has the largest spread between data points, due to the fact it is the largest trophic level and so will contain the most variety.
 
 ]
 
 ---
+#Model Analysis
+
+.pull-left[
+
 ```{r, echo=FALSE, warning=FALSE}
 #setting up the ROC curve 
 size_data <- mutate(Bird_data,
                     size =
                     factor(case_when(
-                      Beak.Length_Culmen < 20.0 ~ "Small",
-                      Beak.Length_Culmen >= 20.0 ~ "Big"
+                      Beak.Length_Culmen < 20.0 ~ "small",
+                      Beak.Length_Culmen >= 20.0 ~ "big"
                       )))
+
+set.seed(123)
 
 bird_split <- initial_split(size_data, prop = 0.80)
 
@@ -256,7 +292,7 @@ bird_rec <- recipe(
   step_dummy(all_nominal(), -all_outcomes())
 
 bird_mod <- logistic_reg() %>%
-  set_engine("glm") 
+  set_engine("glm")
 
 bird_wkflow <- workflow() %>% 
   add_model(bird_mod) %>% 
@@ -265,74 +301,57 @@ bird_wkflow <- workflow() %>%
 bird_fit <- bird_wkflow %>%
   fit(data = train_data)
 
-```
-
-
-# Model Analysis
-
-.pull-left[
-```{r, out.width = "120%", fig.width= 5, echo=FALSE}
 bird_pred <- predict(bird_fit, test_data, type = "prob") %>% 
   bind_cols(test_data)
 
 bird_pred %>%
   roc_curve(
     truth = size,
-    .pred_Small,
+    .pred_small,
     event_level = "second"
   ) %>%
   autoplot()
 
-```
-
-]
-
---
-```{r, fig.width = 3, echo=FALSE}
 cutoff_prob <- 0.5
 bird_table <- bird_pred %>%
   mutate(
-    size      = if_else(size == "Small", "Bird Beak is Small", "Bird Beak is Big"),
-    size_pred = if_else(.pred_Small > cutoff_prob, "Bird labelled Small", "Bird labelled Big")
+    size      = if_else(size == "small", "Bird beak is small", "Bird beak is big"),
+    size_pred = if_else(.pred_small > cutoff_prob, "Bird beak labelled as small", "Bird beak labelled as big")
     ) %>%
   count(size_pred, size) %>%
-  pivot_wider(names_from = size, values_from = n) 
+  pivot_wider(names_from = size, values_from = n)
+
+```
+]
+
+--
+
+.pull-right[
+```{r, fig.width = 3, echo=FALSE}
+
 
 bird_table %>%
   kbl() %>%
   kable_styling(font_size = 18)
 
 ```
-.pull-right[
 - We created a logistic model which predicts the beak length of a bird based on the factors; habitat, mass and trophic level
 
 - The median of culmen lengths is 19.6 mm so we decided to split beak lengths into big and small by the cutoff 20 mm
 
-- The area under the ROC curve is 0.868, indicating the logistic model has great predictive strength
+- The area under the ROC curve is 0.878
 
-- The sensitivity is 0.933, and specificity 0.688
+- The sensitivity is 0.930, and specificity 0.675
 
 - The model has overall good predictive strength
 ]
 
 ---
+class: inverse
 
-# Math Expressions
+# Conclusion
 
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &#36;\alpha+\beta$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
-
-```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-```
-
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-
+.pull-left[
 Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
-
-
+- 
+]
