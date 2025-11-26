@@ -706,10 +706,13 @@ ggplot(data = birds.data_mass,
 ```
 ```{r}
 
-linear_reg() %>%
+linear_culmen_mass <- linear_reg() %>%
   set_engine("lm") %>%
-  fit(log_mass_kg ~ log_culmen, data = birds.data_mass) %>%
-  tidy()
+  fit(log_mass_kg ~ log_culmen, data = birds.data_mass)
+
+tidy(linear_culmen_mass)
+
+glance(linear_culmen_mass)
 ```
 
 ```{r}
