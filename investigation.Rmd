@@ -643,6 +643,9 @@ mean_culmen <- Bird_data %>%
   summarise(mean_culmen = mean(Beak.Length_Culmen, na.rm = TRUE)) %>%
   ungroup()
 
+blue <- c("#0E4D92", "#4682B4","#73c2fb", "#89CFF0")
+blue <- blue[1:length(unique(Bird_data$Trophic.Level))]
+
 clean_data <- Bird_data %>%
   filter(
     !is.na(Habitat),
