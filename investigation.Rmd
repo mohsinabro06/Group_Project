@@ -805,13 +805,16 @@ bird_table <- bird_pred %>%
     ) %>%
   count(size_pred, size) %>%
   pivot_wider(names_from = size, values_from = n) 
+```
 
+
+```{r}
 bird_table
 #%>%
 #  kable(col.names = c("", "Bird Beak is big", "Bird Beak is small"))
 
-sensitivity <- 415/(415+30)
+sensitivity <- 464/(464+35)
 sensitivity
-specificity <- 309/(309+140)
+specificity <- 285/(285+110)
 specificity
 ```
