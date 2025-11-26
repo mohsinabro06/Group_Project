@@ -42,7 +42,7 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
 ```{r}
 Bird_data <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche, Mass) %>%
-  filter(Total.individuals > 5)
+  filter(Total.individuals >= 5)
  
 
 Total_Habitat <- Bird_data %>%
@@ -638,12 +638,12 @@ ggplot(data = plot_data,
 
 #box plots of all the habitats' beak culmen length against trophic levels
 
-mean_culmen <- AVONET3_BirdTree %>%
+mean_culmen <- Bird_data %>%
   group_by(Habitat, Trophic.Level) %>%
   summarise(mean_culmen = mean(Beak.Length_Culmen, na.rm = TRUE)) %>%
   ungroup()
 
-clean_data <- AVONET3_BirdTree %>%
+clean_data <- Bird_data %>%
   filter(
     !is.na(Habitat),
     !is.na(Trophic.Level),
@@ -671,7 +671,7 @@ ggplot(
     title = "Culmen Beak Length across different Trophic Levels",
     subtitle = "Seperated by Habitat",
     x = "Trophic Level",
-    y = "Culmen Beak Length"
+    y = "Log of the Culmen Beak Length"
   )
 ```
 
