@@ -752,6 +752,8 @@ size_data <- mutate(Bird_data,
                       Beak.Length_Culmen >= 20.0 ~ "big"
                       )))
 
+set.seed(123)
+
 bird_split <- initial_split(size_data, prop = 0.80)
 
 train_data <- training(bird_split)
@@ -813,8 +815,8 @@ bird_table
 #%>%
 #  kable(col.names = c("", "Bird Beak is big", "Bird Beak is small"))
 
-sensitivity <- 464/(464+35)
+sensitivity <- 439/(439+33)
 sensitivity
-specificity <- 285/(285+110)
+specificity <- 285/(285+137)
 specificity
 ```
