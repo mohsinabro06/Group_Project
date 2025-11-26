@@ -13,6 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load-lib, include = FALSE}
 library(tidyverse)
 library(readxl)
+library(RColorBrewer)
+library(broom)
+library(parsnip)
+library(tidymodels)
+library(knitr)
+library(dplyr)
+
 # Add any other libraries here
 
 
@@ -26,9 +33,14 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
     sheet = "AVONET3_BirdTree")
 
 Bird_data <- AVONET3_BirdTree %>%
-  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche) 
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche, Mass) %>%
+  filter(Total.individuals >= 5)
+ 
 
-
+Total_Habitat <- Bird_data %>%
+  group_by(Habitat) %>%
+  summarise(total.birds = sum(Total.individuals)) %>%
+  filter(Habitat != "NA")
 
 
 ```
@@ -39,44 +51,246 @@ Bird_data <- AVONET3_BirdTree %>%
 What is the relationship between bird beak length, eating patterns, and trophic level across various habitats?
 
 
-## Data
+## Introduction
 
-Briefly describe your dataset here - include a description of the key variables you will be investigating. 
-Include a citation for your data. 
-See http://libraryguides.vu.edu.au/c.php?g=386501&p=4347840 for guidance on proper citation for datasets. 
-If you got your data off the web, make sure to state the retrieval date.
-
-The dataset includes data about 9,993 different bird species, the key variables within the dataset we are investigating are; Beak Length (Culmen), Habitat, Trophic Level and Mass.
-
-
-
+The chosen dataset (AVONET database) comprehensively summarises functional traits for various species of birds. This includes ecological variables, morphological traits and information on geographical conditions of the birds. The dataset contains 9,993 observations and 36 columns. Each observation corresponds to a record of each bird species, their physical and biological characteristics, and their habitat. 
 
 
 ## Findings
 
-The write-up of your project and findings go here. 
+As part of the data tidying process, we chose to focus our research only on the following variables in the dataset: species, total individuals recorded for each species, beak culmen length, trophic level, and mass. 
 
-Think of this as the text of your presentation with some extra detail to cover what there was not time to discuss in the presentation. This might include any assumptions you made when doing your analysis, any limitations of the work you have done or any ideas you have for future work. Feel free to split this section into subsections to make it easier to read. 
+Before investigating the data visualisations and their corresponding analyses, it is important to clarify the assumptions underlying this study. It is assumed that each species is correctly assigned to its habitat and that the number of individuals recorded is representative of the total population. We also assume that age-related variation is minimal, meaning that differences in body mass and culmen length are not cofounded by age. Lastly, we assume that each species falls into one of the four trophic categories: carnivore, herbivore, omnivore or scavenger.
 
-The length should be roughly 1,500 words. 
-If you want to use a word count addin, you can install this by copying and pasting the following into RStudio:
+We next explore several data visualisations that provide insight into interpreting structures and patterns present in the dataset.
 
-`devtools::install_github("benmarwick/wordcountaddin", type = "source", dependencies = TRUE)`
+### Bar Chart
+```{r echo=FALSE}
+ggplot(data  = Total_Habitat, 
+       aes(x = Habitat,
+           y = total.birds,
+           fill = Habitat)) +
+         geom_col() +
+  theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10)) +
+      scale_fill_brewer(type = "div",
+                        palette = 9,
+                        direction = 1,
+                        aesthetics = "fill") +
+  labs(title = "Total bird count within each habitat",
+       x = "Habitat",
+       y = "Total Birds")
 
-You will then need to restart RStudio. Once you have done that, select the text you want to count the words of, go to Addins, and select the `Word count` addin.
-This addin counts words using two different algorithms, but the results should be similar and as long as you're in the ballpark of 1,500 words, you're good! 
-The addin will ignore code chunks and only count the words in prose. If you don't want to use the addin you can always copy and paste the text into Microsoft Word to do a Word Count!
+```
 
-You can also load your data here and present any analysis results / plots.
-Make sure to hide your code with  `echo = FALSE` unless the point you are trying to make is about the code itself, in which case you should show your code.
+The bar chart illustrates the total number of individuals recorded in each habitat. It shows a strong imbalance in bird counts across habitats, revealing recordings of more birds in the forest habitat than in any other habitat, with the forest habitat having over 40,000 individuals. The shrubland and woodland habitats have moderate counts recorded, while all remaining habitats have fewer than 4,000 individuals, with many fewer than 1,000.
+
+The second bar chart displays the total number of individuals within each trophic level. Similarly, there is also a strong imbalance amongst trophic levels, as carnivores appear to have significantly more birds than scavenger birds. 
+
+This uneven sampling present in both graphs suggests that some habitats and trophic levels, especially with smaller counts, may not provide fully representative estimates in subsequent data visualisations. 
+
+### Scatterplot and Linear Regression
+```{r echo=FALSE}
+birds.data_mass <- Bird_data %>%
+  select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Mass, Trophic.Level)%>%
+  mutate(Mass_kg = Mass/1000,
+         log_mass_kg = log(Mass_kg), log_culmen = log(Beak.Length_Culmen)) %>%
+   filter(Trophic.Level != "NA")
+
+ggplot(data = birds.data_mass,
+       mapping = aes(x = log_culmen,
+                     y = log_mass_kg)) +
+  geom_point(alpha = 0.6, size = 0.6, mapping = aes(colour = Trophic.Level)) +
+  geom_smooth(method = lm, se = FALSE, formula = y ~ x) +
+  labs(
+    title = "Bird Culmen Length vs. Mass",
+    subtitle = "by trophic level",
+    x = "Log of Culmen Length (mm)", 
+    y = "Log of Mass (kg)",
+    colour = "Trophic Level"
+  ) +
+  scale_colour_manual(values = c(
+    "Carnivore" = "#88419d",
+    "Herbivore" = "#d7b5d8",
+    "Omnivore" = "#41b6c4",
+    "Scavenger" = "#0570b0"
+  )) +
+  theme_minimal() +
+  theme(legend.title = element_text(size = 12))
+
+linear_culmen_mass <- linear_reg() %>%
+  set_engine("lm") %>%
+  fit(log_mass_kg ~ log_culmen, data = birds.data_mass)
+
+tidy(linear_culmen_mass)
+
+glance(linear_culmen_mass)
+```
+
+The fitted scatterplot shows the relationship between the logarithm of culmen length and logarithm of mass, in millimeters and kilograms respectively. From the graph, we can conclude that the logarithm of the two variables are positively correlated. This correlation makes sense in the context of bird eating patterns because birds with longer culmens are able to break down and consume larger food sources. This increase in food consumption explains their higher mass. In the corresponding linear regression model, we can see that the slope of the line-of-best-fit is 2.085 and the intercept is -9.585. The equation for this line is log(Mass) = -9.585 + 2.085 x log(Culmen Length). We can interpret this to mean that for every 1% increase in culmen length, a bird’s mass increases by 2.085%. The interpretation of the intercept is irrelevant because it occurs when log(Culmen Length) is 0 (i.e. when a bird’s culmen length is 1 millimeter) which does not make sense in a real context. The r-squared value for this linear regression is 0.605, which means that 60.5% of the variation in the logarithm of mass is explained by the logarithm of culmen length. Although the r-squared value is not as high as it should be for all the variation to be explained, it is high enough for there to be a concrete correlation between the two variables.
+
+Moreover, taking a closer look at the spread of the datapoints, we can see that both the points furthest left and furthest right belong to the carnivorous trophic level.  This links back to the fact that the carnivorous trophic level contains the most individuals (as seen in the boxplots of individuals in each trophic level in each habitat) and consequently the most variety. 
+
+### Histogram
+
+```{r echo=FALSE}
+
+ggplot(Bird_data, 
+       aes(
+         x = Beak.Length_Culmen, 
+         weight = Total.individuals)) +
+  geom_histogram(binwidth = 0.2, fill = "steelblue") +
+  labs(title = "Histogram of Beak Lengths (Weighted by Individuals)",
+       x = "Beak Length (Culmen)", 
+       y = "Total Individuals") +
+  scale_x_continuous(limits = c(0, 100)) +
+  theme_minimal() +
+  geom_vline(xintercept = c(8, 25), 
+             linetype = "dashed", 
+             color = "red")  
+```
+
+74.5% of beak lengths lie between 8 and 25 with the number of birds decreasing as beak length increases (after approximately 20 mm). There are very few observations after beak lengths of 100 cm, which suggests that most birds have beaks shorter than 100 mm. This is likely because birds tend to eat smaller prey. A majority of the data consists of forest birds (as seen by bar chart), which helps explain this since forest birds are known for preying on small mammals, insects and reptiles. The histogram of bird beak length frequency is positively-skewed. This shows that the mean is higher than the median.
+
+### Boxplot
+```{r echo=FALSE}
+mean_culmen <- Bird_data %>%
+  group_by(Habitat, Trophic.Level) %>%
+  summarise(mean_culmen = mean(Beak.Length_Culmen, na.rm = TRUE)) %>%
+  ungroup()
+
+blue <- c("#0E4D92", "#4682B4","#73c2fb", "#89CFF0")
+blue <- blue[1:length(unique(Bird_data$Trophic.Level))]
+
+clean_data <- Bird_data %>%
+  filter(
+    !is.na(Habitat),
+    !is.na(Trophic.Level),
+    Trophic.Level != "NA",
+    Habitat != "NA"
+  )
+
+ggplot(
+  data= clean_data %>%
+    filter(!is.na(Habitat), !is.na(Trophic.Level)),
+  aes(x = Trophic.Level,
+      y = Beak.Length_Culmen,
+      fill = Trophic.Level)
+  ) +
+  
+  geom_boxplot(outlier.size = 0.8) +
+  facet_wrap(~ Habitat, ncol = 3, scales = "free_y") +
+  scale_y_log10() +
+  theme_minimal(base_size = 10) +
+  theme(axis.text.x = element_text(size = 7, angle = 20),
+        strip.text = element_text(size = 10, face = "bold"),
+        legend.position = "bottom") +
+  scale_fill_manual(values = blue) +
+  labs(
+    title = "Culmen Beak Length across different Trophic Levels",
+    subtitle = "Seperated by Habitat",
+    x = "Trophic Level",
+    y = "Log of the Culmen Beak Length"
+  )
+
+```
+The faceted boxplots of each habitat illustrate the distribution of bird culmen lengths across various trophic levels within each habitat. A log-scaled y-axis was used to improve interpretability by compressing values and highlighting proportional differences in beak size across habitats. 
+
+Broadly similar distributional patterns in culmen lengths across trophic levels between the marine, wetland, coastal and riverine habitats were observed, making it ecologically consistent. The marine and wetland habitats showed the clearest trend, with consistently long and variable culmen length, with carnivores having the longest mean culmen length. The coastal habitat also showed a similar but weaker pattern, with moderately long culmens and less variation, with omnivores having the longest mean culmen length. The riverine habitat showed an intermediate pattern with culmen lengths longer than in terrestrial habitats but shorter and less variable than in marine and wetland habitats, which reflects the mixture of aquatic and terrestrial birds typically found near rivers. Omnivores and carnivores had relatively similar mean culmen length, but herbivores had a significantly smaller mean culmen length. Scavenger birds were absent from the aquatic habitats in the dataset, suggesting that scavenging guilds are either rare or not presented in this dataset. 
+
+Similarly in the forest and woodland habitats, these habitats displayed similar distributions across trophic levels, with carnivores having moderately high culmen lengths and herbivores remaining relatively low and consistent, with very few scavenger birds in the forest habitat having significantly higher culmen lengths. The resemblance in their boxplots reflects the shared structural complexity and comparable bird communities of tree-dominated environments. 
+
+The open terrestrial habitats, such as the grassland, shrubland and desert habitats show broadly similar culmen-length patterns. They display generally lower medians and narrower ranges across trophic levels. These open terrestrial habitats support fewer long-billed species, resulting in distributions more compressed than those of forested or aquatic habitats.
+
+In summary, amongst the different habitats, the trophic levels differ widely in culmen length, with carnivores generally exhibiting the largest and most variable beak sizes. Several habitats lack scavenger birds entirely, suggesting limited representation of that trophic level in the dataset.
+The boxplots highlight strong relationships between the culmen length of birds of different trophic levels within each habitat, revealing strong interactions between habitat type and trophic ecology, reflecting ecological structure and distinct feeding strategies.
+
+### Logistic Regression, Predictions Table, and ROC
+```{r echo=FALSE}
+size_data <- mutate(Bird_data,
+                    size =
+                    factor(case_when(
+                      Beak.Length_Culmen < 20.0 ~ "small",
+                      Beak.Length_Culmen >= 20.0 ~ "big"
+                      )))
+
+set.seed(123)
+
+bird_split <- initial_split(size_data, prop = 0.80)
+
+train_data <- training(bird_split)
+test_data  <- testing(bird_split)
+
+bird_rec <- recipe(
+  size ~ Habitat + Trophic.Level + Mass,       
+  data = train_data 
+  ) %>%
+  step_dummy(all_nominal(), -all_outcomes())
+
+summary(bird_rec)
+
+bird_mod <- logistic_reg() %>%
+  set_engine("glm")
 
 
-Assumptions: We must assume that each bird lives in the specified habitat.
-The number of total individuals is proportional to the total population.
+bird_wkflow <- workflow() %>% 
+  add_model(bird_mod) %>% 
+  add_recipe(bird_rec)
+
+bird_fit <- bird_wkflow %>%
+  fit(data = train_data)
+
+bird_pred <- predict(bird_fit, test_data, type = "prob") %>% 
+  bind_cols(test_data)
+
+bird_pred
+
+cutoff_prob <- 0.5
+bird_table <- bird_pred %>%
+  mutate(
+    size      = if_else(size == "small", "Bird beak is small", "Bird beak is big"),
+    size_pred = if_else(.pred_small > cutoff_prob, "Bird beak labelled as small", "Bird beak labelled as big")
+    ) %>%
+  count(size_pred, size) %>%
+  pivot_wider(names_from = size, values_from = n) 
+
+```
+
+The logistic regression uses bird habitat, trophic level, and mass data as predictors to predict the binary outcome of whether a bird’s beak is “big” or “small”.
+A bird’s beak is classified as “big” if the length of its culmen is greater than or equal to 20 mm and “small” if it is less than 20 mm. This is primarily to make the data a categorical one. The median of the data lies at 19.6 mm, which is why we chose 20 mm to be the boundary.
+
+#### ROC Curve and AUC
+```{r echo=FALSE}
+bird_pred %>%
+  roc_curve(
+    truth = size,
+    .pred_small,
+    event_level = "second"
+  ) %>%
+  autoplot()
+
+
+bird_pred %>%
+  roc_auc(
+    truth = size,
+    .pred_small,
+    event_level = "second"
+  )
+```
+
+The receiver operating characteristic (ROC) curve comes close to the point (0,1). Since (0,1) is when the sensitivity and specificity are both ideal (and have a value of 1), we can see that the logistic regression model is able to predict beak size quite well. The area under the curve (AUC) is 0.878 square units which indicates further support that the logistic regression model is quite accurate; as an AUC close to 1 shows predictive strength. 
+The model has a sensitivity of 0.930. This means the model can precisely distinguish between true positives and false negatives.
+
+However, the model has a specificity of 0.675, which, although promising, means the model does not flawlessly identify true negatives, and that the identification of true negatives may be due to chance. The model may mislabel some birds whose beak length is big as “small” almost as often as it would correctly label it as “big”.
+Overall, the model does not misrepresent bird beaks who are small but has some errors in identifying big bird beaks’ lengths. Thus, it can be said habitat, mass and trophic level are somewhat good predictors for the length of beaks of birds as the model has good predictive strength. 
+
+## Conclusion
+
+As we begin to draw conclusions from our data visualisations, it is important to consider the limitations of generalising our conclusions to larger bird populations across the given habitats. One reason that it may be difficult to generalize the data analyses is because, in the dataset, there is an overwhelming majority of birds in the carnivorous trophic level as well as birds in the forest habitat. Some habitats also do not have any data points for birds in the scavenger trophic level. In reality, our analyses might only be generalizable to the two larger demographics (carnivores and forest birds) rather than the entire population. We would have to ensure that our sample is representative of the larger population. For future studies, we could do this through stratified sampling. 
+
+All in all, we can conclude from our data analysis that there is a relationship between bird culmen length, body mass, trophic levels, and habitats. We have seen an interaction between eating patterns and habitat, a definite positive correlation between culmen length and body mass, and the reliability of habitat, trophic level, and mass as predictors of beak culmen length. 
+
 
 ## References
-
-List any references here. You should, at a minimum, list your data source.
-
 
 figshare. (n.d.). AVONET: morphological, ecological and geographical data for all birds (Tobias et al 2022 Ecology Letters doi: https://doi.org/10.111/ele.13898). Figshare. https://figshare.com/s/b990722d72a26b5bfead
