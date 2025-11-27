@@ -67,6 +67,16 @@ ggplot(data  = Total_Habitat,
        x = "Habitat",
        y = "Total Birds")
 
+ggplot(data = total_trophic,
+       aes(x = Trophic.Level,
+           y = total.birds,
+           fill = Trophic.Level)) +
+  geom_col() +
+  theme_minimal() +
+  labs(title = "Total bird count within each habitat",
+       x = "Habitat",
+       y = "Total Birds")
+
 ```
 
 ```{r}
