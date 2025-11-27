@@ -133,7 +133,7 @@ Moreover, taking a closer look at the spread of the datapoints, we can see that 
 
 ### Histogram
 
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 
 ggplot(Bird_data, 
        aes(
@@ -206,7 +206,7 @@ In summary, amongst the different habitats, the trophic levels differ widely in 
 The boxplots highlight strong relationships between the culmen length of birds of different trophic levels within each habitat, revealing strong interactions between habitat type and trophic ecology, reflecting ecological structure and distinct feeding strategies.
 
 ### Logistic Regression, Predictions Table, and ROC
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 size_data <- mutate(Bird_data,
                     size =
                     factor(case_when(
