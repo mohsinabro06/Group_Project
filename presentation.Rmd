@@ -68,6 +68,14 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
     sheet = "AVONET3_BirdTree")
 ```
 
+#Did you know...?
+
+```{r,echo=FALSE}
+include_graphics("img/parrot.jpg")
+```
+
+
+---
 
 # Introduction
 
