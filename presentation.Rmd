@@ -113,7 +113,7 @@ include_graphics("img/bird_culmen.png")
 
 # Total individuals within each habitat
 .pull-left[
-```{r, out.width= "100%", fig.width= 8, echo=FALSE}
+```{r, out.width= "80%", fig.width= 8, echo=FALSE}
 Bird_data <- AVONET3_BirdTree %>%
   select(Species3, Total.individuals, Beak.Length_Culmen, Habitat, Trophic.Level, Trophic.Niche, Mass) %>%
   filter(Total.individuals > 5)
@@ -140,38 +140,55 @@ ggplot(data  = Total_Habitat,
   labs(title = "Total bird count within each habitat",
        x = "Habitat",
        y = "Total Birds")
+
 ```
-]
 
---
-
-.pull-right[
-- This bar chart shows the number of total individuals recorded within each habitat.
-
-- The visualisation shows a strong imbalance in bird count across habitat, with forest having over 40,000 individuals
+- Shows a strong imbalance in bird count across habitat, with forest having over 40,000 individuals
 
 - Shrubland and woodland have moderate counts, but the rest have fewer than 4,000 individuals
 
-- Suggests some samples may not be fully representative of their population
+]
 
+--
+.pull-right[
+```{r, echo=FALSE}
+total_trophic <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) %>%
+  filter(Trophic.Level != "NA")
+
+pink <- c("#FFC4D6", "#FFA6C1", "#FF87AB", "#FF5D8F")
+
+ggplot(data = total_trophic,
+       aes(x = Trophic.Level,
+           y = total.birds,
+           fill = Trophic.Level)) +
+  geom_col() +
+  theme_minimal() +
+  scale_fill_manual(values = pink) +
+  labs(title = "Total bird count within each Trophic Level",
+       x = "Trophic Level",
+       y = "Total Birds")
+```
+- Shows a strong imbalance in bird count across trophic level, with carnivores having nearly 50,000 individuals.
+
+- This is significantly higher than bird count in other trophic levels
 ]
 
 ---
-#How Trophic Level affects Culmen Length in each Habitat
+#Faceted Boxplots
 
 .pull-left[
 ```{r, out.width= "100%", echo=FALSE}
 include_graphics("img/boxplotfacet.png")
 ```
-
 ]
 --
-.pull-left[
-- Illustrate the distribution of culmen lengths across various trophic levels within each habitat
+.pull-right[
+- Implemented a log-scaled y-axis to improve readability
 
-
+- There are patterns between the different ecological niches; aquatic, tree-dominated and open terrestrial
 ]
-
 ---
 
 # Histrogram showing frequency of culmen length
@@ -199,9 +216,7 @@ suppressWarnings(print(histogram))
 --
 
 .pull-right[
-- We calculated that three quarters of the birds have culmen lengths between the values of 8 and 25, with the peak occurring around 15mm
-
-- As beak length increases past 25 mm the number of individuals greatly decreases
+- Three quarters of the birds have culmen lengths between the values of 8 and 25, with the peak occurring around 15mm
 
 - There were few values above 100 mm, but we changed the scale of the visualisation in order to increase readability
 
@@ -243,7 +258,7 @@ ggplot(data = birds.data_mass,
   theme(legend.title = element_text(size = 12))
 ```
 
-- The scatterplot shows a positive correlation between the log of the variables.
+- The scatterplot shows a positive correlation between the log of the variables
 ]
 
 
@@ -267,10 +282,7 @@ linear_reg() %>%
 ---
 #Model Analysis
 
-.pull-left[
-
 ```{r, echo=FALSE, warning=FALSE}
-#setting up the ROC curve 
 size_data <- mutate(Bird_data,
                     size =
                     factor(case_when(
@@ -304,14 +316,6 @@ bird_fit <- bird_wkflow %>%
 bird_pred <- predict(bird_fit, test_data, type = "prob") %>% 
   bind_cols(test_data)
 
-bird_pred %>%
-  roc_curve(
-    truth = size,
-    .pred_small,
-    event_level = "second"
-  ) %>%
-  autoplot()
-
 cutoff_prob <- 0.5
 bird_table <- bird_pred %>%
   mutate(
@@ -320,14 +324,11 @@ bird_table <- bird_pred %>%
     ) %>%
   count(size_pred, size) %>%
   pivot_wider(names_from = size, values_from = n)
-
 ```
-]
 
---
 
-.pull-right[
-```{r, fig.width = 3, echo=FALSE}
+.pull-left[
+```{r, fig.width = 4, echo=FALSE}
 
 
 bird_table %>%
@@ -335,15 +336,34 @@ bird_table %>%
   kable_styling(font_size = 18)
 
 ```
-- We created a logistic model which predicts the beak length of a bird based on the factors; habitat, mass and trophic level
+- Predicts the beak length of a bird based on the factors; habitat, mass and trophic level
 
 - The median of culmen lengths is 19.6 mm so we decided to split beak lengths into big and small by the cutoff 20 mm
 
-- The area under the ROC curve is 0.878
-
 - The sensitivity is 0.930, and specificity 0.675
 
-- The model has overall good predictive strength
+]
+
+--
+
+.pull-right[
+
+```{r, out.width = "150%", echo=FALSE, warning=FALSE}
+#setting up the ROC curve 
+
+bird_pred %>%
+  roc_curve(
+    truth = size,
+    .pred_small,
+    event_level = "second"
+  ) %>%
+  autoplot()
+
+```
+]
+
+.pull-left[
+- The area under the ROC curve is 0.878
 ]
 
 ---
@@ -353,5 +373,17 @@ class: inverse
 
 .pull-left[
 Limitations:
-- 
+
+- May be difficult to generalise due to dominance of birds in forest habitat and carnivore trophic level
+
+- For future studies we would implement stratified sampling to ensure a sample that is representative of the population
 ]
+
+.pull-right[
+From our analysis we can conclude that there is a relationship between culmen length, mass, trophic level and habitat.
+
+]
+
+--
+
+background-image: url(img/falcon.jpg)
