@@ -80,6 +80,23 @@ ggplot(data  = Total_Habitat,
   labs(title = "Total bird count within each habitat",
        x = "Habitat",
        y = "Total Birds")
+total_trophic <- AVONET3_BirdTree %>%
+  group_by(Trophic.Level) %>%
+  summarise(total.birds = sum(Total.individuals)) %>%
+  filter(Trophic.Level != "NA")
+
+pink <- c("#FFC4D6", "#FFA6C1", "#FF87AB", "#FF5D8F")
+
+ggplot(data = total_trophic,
+       aes(x = Trophic.Level,
+           y = total.birds,
+           fill = Trophic.Level)) +
+  geom_col() +
+  theme_minimal() +
+  scale_fill_manual(values = pink) +
+  labs(title = "Total bird count within each Trophic Level",
+       x = "Trophic Level",
+       y = "Total Birds")
 
 ```
 

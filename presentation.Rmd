@@ -191,7 +191,7 @@ include_graphics("img/boxplotfacet.png")
 ]
 ---
 
-# Histrogram showing frequency of culmen length
+# Histogram showing frequency of culmen length
 
 .pull-left[
 ```{r, echo=FALSE}
