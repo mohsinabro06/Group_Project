@@ -60,7 +60,7 @@ The chosen dataset (AVONET database) comprehensively summarises functional trait
 
 As part of the data tidying process, we chose to focus our research only on the following variables in the dataset: species, total individuals recorded for each species, beak culmen length, trophic level, and mass. 
 
-Before investigating the data visualisations and their corresponding analyses, it is important to clarify the assumptions underlying this study. It is assumed that each species is correctly assigned to its habitat and that the number of individuals recorded is representative of the total population. We also assume that age-related variation is minimal, meaning that differences in body mass and culmen length are not cofounded by age. Lastly, we assume that each species falls into one of the four trophic categories: carnivore, herbivore, omnivore or scavenger.
+Before investigating the data visualisations and their corresponding analyses, it is important to clarify the assumptions underlying this study. It is assumed that each species is correctly assigned to its habitat and that the number of individuals recorded is representative of the total population. We also assume that age-related variation is minimal, meaning that differences in body mass and culmen length are not confounded by age. Lastly, we assume that each species falls into one of the four trophic categories: carnivore, herbivore, omnivore or scavenger.
 
 We next explore several data visualisations that provide insight into interpreting structures and patterns present in the dataset.
 
