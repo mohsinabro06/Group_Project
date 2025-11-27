@@ -85,7 +85,7 @@ ggplot(data  = Total_Habitat,
 
 The bar chart illustrates the total number of individuals recorded in each habitat. It shows a strong imbalance in bird counts across habitats, revealing recordings of more birds in the forest habitat than in any other habitat, with the forest habitat having over 40,000 individuals. The shrubland and woodland habitats have moderate counts recorded, while all remaining habitats have fewer than 4,000 individuals, with many fewer than 1,000.
 
-The second bar chart displays the total number of individuals within each trophic level. Similarly, there is also a strong imbalance amongst trophic levels, as carnivores appear to have significantly more birds than scavenger birds. 
+The second bar chart displays the total number of individuals within each trophic level. Similarly, there is also a strong imbalance amongst trophic levels, as carnivores appear to have nearly 50,000 individuals, significantly more birds than scavenger birds. 
 
 This uneven sampling present in both graphs suggests that some habitats and trophic levels, especially with smaller counts, may not provide fully representative estimates in subsequent data visualisations. 
 
