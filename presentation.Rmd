@@ -176,20 +176,6 @@ ggplot(data = total_trophic,
 ]
 
 ---
-#Faceted Boxplots
-
-.pull-left[
-```{r, out.width= "100%", echo=FALSE}
-include_graphics("img/boxplotfacet.png")
-```
-]
---
-.pull-right[
-- Implemented a log-scaled y-axis to improve readability
-
-- There are patterns between the different ecological niches; aquatic, tree-dominated and open terrestrial
-]
----
 
 # Histogram showing frequency of culmen length
 
@@ -224,6 +210,20 @@ suppressWarnings(print(histogram))
 
 ]
 
+---
+#Faceted Boxplots
+
+.pull-left[
+```{r, out.width= "100%", echo=FALSE}
+include_graphics("img/boxplotfacet.png")
+```
+]
+--
+.pull-right[
+- Implemented a log-scaled y-axis to improve readability
+
+- There are patterns between the different ecological niches; aquatic, tree-dominated and open terrestrial
+]
 ---
 
 # Scatterplot of mass and culmen length
@@ -273,7 +273,7 @@ linear_reg() %>%
 
 - The linear regression gives the equation log(Mass_kg) = -9.585 + 2.085*log(Culmen Length)
 
-- So for every 1% increase in culmen length, the mass increases by 2.085%, birds with longer culmen lengths are able to consume a larger food sources, and so it makes sense that they will have a larger mass
+- So for every 1% increase in culmen length, the mass increases by 2.085%
 
 - Birds in the carnivore trophic level has the largest spread between data points, due to the fact it is the largest trophic level and so will contain the most variety.
 
