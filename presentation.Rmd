@@ -68,15 +68,6 @@ AVONET3_BirdTree <- read_excel("data/AVONET3_BirdTree.xlsx",
     sheet = "AVONET3_BirdTree")
 ```
 
-#Did you know...?
-
-```{r,echo=FALSE}
-include_graphics("img/parrot.jpg")
-```
-
-
----
-
 # Introduction
 
 We chose to investigate the AVONET Bird dataset. This dataset includes many traits of various species of birds, such as ecological variables, morphological traits and information on geographical conditions of the birds.

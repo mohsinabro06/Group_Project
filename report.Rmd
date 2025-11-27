@@ -205,7 +205,7 @@ ggplot(
   scale_fill_manual(values = blue) +
   labs(
     title = "Culmen Beak Length across different Trophic Levels",
-    subtitle = "Seperated by Habitat",
+    subtitle = "Separated by Habitat",
     x = "Trophic Level",
     y = "Log of the Culmen Beak Length"
   )
@@ -315,7 +315,7 @@ Overall, the model does not misrepresent bird beaks who are small but has some e
 
 ## Conclusion
 
-As we begin to draw conclusions from our data visualisations, it is important to consider the limitations of generalising our conclusions to larger bird populations across the given habitats. One reason that it may be difficult to generalize the data analyses is because, in the dataset, there is an overwhelming majority of birds in the carnivorous trophic level as well as birds in the forest habitat. Some habitats also do not have any data points for birds in the scavenger trophic level. In reality, our analyses might only be generalizable to the two larger demographics (carnivores and forest birds) rather than the entire population. We would have to ensure that our sample is representative of the larger population. For future studies, we could do this through stratified sampling. 
+As we begin to draw conclusions from our data visualisations, it is important to consider the limitations of generalising our conclusions to larger bird populations across the given habitats. One reason that it may be difficult to generalise the data analyses is because, in the dataset, there is an overwhelming majority of birds in the carnivorous trophic level as well as birds in the forest habitat. Some habitats also do not have any data points for birds in the scavenger trophic level. In reality, our analyses might only be generalisable to the two larger demographics (carnivores and forest birds) rather than the entire population. We would have to ensure that our sample is representative of the larger population. For future studies, we could do this through stratified sampling. 
 
 All in all, we can conclude from our data analysis that there is a relationship between bird culmen length, body mass, trophic levels, and habitats. We have seen an interaction between eating patterns and habitat, a definite positive correlation between culmen length and body mass, and the reliability of habitat, trophic level, and mass as predictors of beak culmen length. 
 
