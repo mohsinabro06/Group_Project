@@ -254,6 +254,7 @@ bird_table <- bird_pred %>%
   count(size_pred, size) %>%
   pivot_wider(names_from = size, values_from = n) 
 
+bird_table
 ```
 
 The logistic regression uses bird habitat, trophic level, and mass data as predictors to predict the binary outcome of whether a bird’s beak is “big” or “small”.
@@ -279,6 +280,17 @@ bird_pred %>%
 ```
 
 The receiver operating characteristic (ROC) curve comes close to the point (0,1). Since (0,1) is when the sensitivity and specificity are both ideal (and have a value of 1), we can see that the logistic regression model is able to predict beak size quite well. The area under the curve (AUC) is 0.878 square units which indicates further support that the logistic regression model is quite accurate; as an AUC close to 1 shows predictive strength. 
+
+#### Sensitivity and Specificity
+```{r echo=FALSE}
+sensitivity_1 <- 439/(439+33)
+specificity_1 <- 285/(285+137)
+
+ss_df <- data.frame(sensitivity = c(sensitivity_1),
+                    specificity = c(specificity_1))
+ss_df
+```
+
 The model has a sensitivity of 0.930. This means the model can precisely distinguish between true positives and false negatives.
 
 However, the model has a specificity of 0.675, which, although promising, means the model does not flawlessly identify true negatives, and that the identification of true negatives may be due to chance. The model may mislabel some birds whose beak length is big as “small” almost as often as it would correctly label it as “big”.
