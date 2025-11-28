@@ -1,3 +1,9 @@
+##Team Members
+- Beth Peters (s2852258), bethpeters
+- Beatrice Shek (s2781678), beashek1-spec
+- Faaiz Mir (s2905871), faaizm26
+- Mohsin Abro (s2783577), mohsinabro06
+
 # Introduction to Data Science, Group Project
 
 This is a template repository for your group project. One of your group members should clone this repository and add the other team members as collaborators. You should also add the `uoeIDS` course GitHub account as a collaborator.
